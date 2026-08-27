@@ -77,7 +77,59 @@ export const circuits: Tour[] = [];
 
 // Demo « voyages organisés » — replaced as soon as the client publishes
 // their own programmes in wp-admin.
-export const voyagesOrganises: Tour[] = [];
+export const voyagesOrganises: Tour[] = [
+  {
+    slug: "dakhla-aout-2026",
+    title: "Dakhla — L'évasion authentique",
+    subtitle: "Quatre jours entre lagune, dunes et sources thermales",
+    duration: "4 jours / 3 nuits",
+    dates: "Du 27/08/2026 au 30/08/2026",
+    price: "4 900 dh",
+    priceNote:
+      "Par personne en bungalow quadruple, pension complète. Triple 5 450 dh, double 5 950 dh.",
+    // TODO: remplacer par une vraie photo de Dakhla fournie par l'agence.
+    image: "/placeholder.svg",
+    region: "Maroc — Sud",
+    airline: "Royal Air Maroc",
+    overview:
+      "Quatre jours à Dakhla en pension complète, au bord de la lagune. Vol Royal Air Maroc à l'aller depuis Rabat et retour sur Casablanca, hébergement en bungalow au West Point Dakhla et transferts assurés.",
+    highlights: [
+      "Hébergement au West Point Dakhla",
+      "Pension complète",
+      "Transferts aéroport / hôtel inclus",
+      "Excursions en option : Porto Rico, source thermale d'Asnaa, dune blanche",
+    ],
+    included: [
+      "Vol Royal Air Maroc — aller Rabat → Dakhla, retour Dakhla → Casablanca",
+      "Transferts aéroport / hôtel",
+      "3 nuits en bungalow double, triple ou quadruple",
+      "Pension complète",
+    ],
+    notIncluded: [
+      "Les trois excursions : 300 dh (plage Porto Rico, source thermale d'Asnaa, dune blanche)",
+      "Les boissons et dépenses personnelles",
+      "L'assurance voyage",
+    ],
+    route: ["Rabat", "Dakhla", "Casablanca"],
+    hebergement: [{ city: "Dakhla", nights: "3", hotels: "West Point Dakhla — bungalows" }],
+    priceTables: [
+      {
+        title: "Prix par personne (dh)",
+        dates: "Du 27/08 au 30/08/2026",
+        columns: ["Formule", "Chambre double", "Chambre triple", "Quadruple"],
+        columnRoles: [{ kind: "adultDouble" }, { kind: "adultTriple" }, { kind: "adultTriple" }],
+        rows: [
+          {
+            label: "West Point Dakhla",
+            sub: "Bungalow, pension complète",
+            cells: ["5 950", "5 450", "4 900"],
+          },
+        ],
+      },
+    ],
+    options: ["Les trois excursions : 300 dh par personne"],
+  },
+];
 
 export const croisieres: Tour[] = [];
 

@@ -66,8 +66,17 @@ export const Route = createFileRoute("/omra/$slug")({
 function PriceTable({
   rows,
 }: {
-  rows: { label: string; sub?: string; quad: string; triple: string; double: string }[];
+  rows: {
+    label: string;
+    sub?: string;
+    quad: string;
+    triple: string;
+    double: string;
+    quint?: string;
+  }[];
 }) {
+  // Only widen the grid when at least one row actually prices a 5-share room.
+  const hasQuint = rows.some((r) => r.quint);
   return (
     <>
       {/* mobile — one card per hotel, no horizontal scrolling */}
@@ -78,11 +87,14 @@ function PriceTable({
               <div className="text-sm font-semibold">{r.label}</div>
               {r.sub && <div className="mt-0.5 text-xs opacity-80">{r.sub}</div>}
             </div>
-            <div className="grid grid-cols-3 divide-x divide-x-reverse divide-border text-center">
+            <div
+              className={`grid ${hasQuint ? "grid-cols-4" : "grid-cols-3"} divide-x divide-x-reverse divide-border text-center`}
+            >
               {[
                 { room: "ثنائية", price: r.double, highlight: true },
                 { room: "ثلاثية", price: r.triple },
                 { room: "رباعية", price: r.quad },
+                ...(hasQuint ? [{ room: "خماسية", price: r.quint || "—" }] : []),
               ].map((c) => (
                 <div key={c.room} className="px-2 py-3">
                   <div className="text-xs text-muted-foreground">{c.room}</div>
@@ -101,16 +113,19 @@ function PriceTable({
 
       {/* tablet & desktop — comparison table */}
       <div className="hidden overflow-hidden rounded-2xl border border-border sm:block">
-        <div className="grid grid-cols-4 gap-2 bg-accent px-4 py-3 text-center text-sm font-semibold text-accent-foreground">
+        <div
+          className={`grid ${hasQuint ? "grid-cols-5" : "grid-cols-4"} gap-2 bg-accent px-4 py-3 text-center text-sm font-semibold text-accent-foreground`}
+        >
           <span className="text-right">الفندق</span>
           <span>ثنائية</span>
           <span>ثلاثية</span>
           <span>رباعية</span>
+          {hasQuint && <span>خماسية</span>}
         </div>
         {rows.map((r, i) => (
           <div
             key={r.label}
-            className={`grid grid-cols-4 items-center gap-2 border-b border-border px-4 py-3 text-center text-sm last:border-0 ${i % 2 ? "bg-sand" : "bg-card"}`}
+            className={`grid ${hasQuint ? "grid-cols-5" : "grid-cols-4"} items-center gap-2 border-b border-border px-4 py-3 text-center text-sm last:border-0 ${i % 2 ? "bg-sand" : "bg-card"}`}
           >
             <div className="text-right">
               <div className="font-medium">{r.label}</div>
@@ -125,6 +140,11 @@ function PriceTable({
             <div dir="ltr" className="font-semibold">
               {r.quad}
             </div>
+            {hasQuint && (
+              <div dir="ltr" className="font-semibold">
+                {r.quint || "—"}
+              </div>
+            )}
           </div>
         ))}
       </div>

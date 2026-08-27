@@ -222,6 +222,7 @@ function mapOmraRow(r: Record<string, unknown>): PriceRow {
     quad: str(r.quad),
     triple: str(r.triple),
     double: str(r.double),
+    quint: str(r.quint) || undefined,
   };
 }
 

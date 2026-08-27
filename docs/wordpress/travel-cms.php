@@ -754,6 +754,13 @@ add_action('acf/init', function () {
                                 'type'  => 'text',
                             ],
                             [
+                                'key'   => 'field_omra_tables_rows_quint',
+                                'name'  => 'quint',
+                                'label' => 'الخماسية',
+                                'type'  => 'text',
+                                'instructions' => 'اختياري — اتركه فارغًا إذا لم تكن متوفرة.',
+                            ],
+                            [
                                 'key'   => 'field_omra_tables_rows_quad',
                                 'name'  => 'quad',
                                 'label' => 'الرباعية',

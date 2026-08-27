@@ -113,15 +113,21 @@ export const agency: AgencyConfig = {
   },
   // Sampled from the logo: the red is #e10d0d, the kufic mark is near-black.
   theme: {
-    brand: "#e10d0d",     // logo red — buttons, links, active states
-    accent: "#c9a227",    // gold, echoing the agency's own Omra flyers
+    brand: "#e10d0d", // logo red — buttons, links, active states
+    accent: "#c9a227", // gold, echoing the agency's own Omra flyers
     highlight: "#e0b64a", // lighter gold — section eyebrows
-    navy: "#121010",      // logo black, softened a touch for large surfaces
+    navy: "#121010", // logo black, softened a touch for large surfaces
     headerStyle: "light",
     footerStyle: "light",
   },
   contact: {
-    phones: ["05 37 64 52 65", "06 61 74 74 73", "06 61 74 94 16", "06 11 89 70 91", "06 71 95 64 18"],
+    phones: [
+      "05 37 64 52 65",
+      "06 61 74 74 73",
+      "06 61 74 94 16",
+      "06 11 89 70 91",
+      "06 71 95 64 18",
+    ],
     whatsapp: "+212 661 74 74 73",
     email: "contact@mobaraka.ma",
     addresses: {
