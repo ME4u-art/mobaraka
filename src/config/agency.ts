@@ -105,55 +105,48 @@ export const notFoundHead = () => ({
 
 export const agency: AgencyConfig = {
   identity: {
-    name: "Votre Agence",
-    tagline: "Agence de voyages",
-    // Drop the client's file in public/ and point these at it. `logoOnDark`
-    // is optional — remove it when one logo works on both surfaces.
-    logo: "/logo-placeholder.svg",
-    logoOnDark: "/logo-placeholder-dark.svg",
+    name: "Mobaraka Tourisme & Voyage",
+    tagline: "Agence de tourisme et de voyages — Témara",
+    logo: "/logo-mobaraka.png",
+    // No on-dark variant: the mark is black + red, so the header and footer
+    // run in their "light" mode below and the colour logo is used everywhere.
   },
-  // Four seeds — every other colour on the site is derived from them
-  // (see the top of styles.css). Change these and the whole site follows.
+  // Sampled from the logo: the red is #e10d0d, the kufic mark is near-black.
   theme: {
-    brand: "#1a9cc0", // primary: buttons, links, active states
-    accent: "#ef6b45", // hero accent words, badges
-    highlight: "#e0a83b", // section eyebrows, decorative details
-    navy: "#16232f", // body text, header pill, footer
+    brand: "#e10d0d",     // logo red — buttons, links, active states
+    accent: "#c9a227",    // gold, echoing the agency's own Omra flyers
+    highlight: "#e0b64a", // lighter gold — section eyebrows
+    navy: "#121010",      // logo black, softened a touch for large surfaces
+    headerStyle: "light",
+    footerStyle: "light",
   },
   contact: {
-    phones: ["+212 500 000 000"],
-    whatsapp: "+212 600 000 000",
-    email: "contact@votre-agence.ma",
+    phones: ["05 37 64 52 65", "06 61 74 74 73", "06 61 74 94 16", "06 11 89 70 91", "06 71 95 64 18"],
+    whatsapp: "+212 661 74 74 73",
+    email: "contact@mobaraka.ma",
     addresses: {
-      fr: "Adresse de l'agence, Ville",
-      ar: "عنوان الوكالة، المدينة",
+      fr: "N°3471, Magasin n°1, Quartier Al Wifaq, RDC, Témara",
+      ar: "رقم 3471، المحل رقم 1، حي الوفاق، تمارة",
     },
-    // Used for the Google Maps embed on /contact — the exact search string.
-    mapQuery: "Votre Agence, Ville",
+    mapQuery: "Mobaraka Tourisme et Voyage, Al Wifaq, Témara",
   },
   socials: {},
-  // Unlisted keys default to OFF. The template ships with everything ON so a
-  // demo shows the full catalogue — switch off whatever a client doesn't sell.
   features: {
-    voyagesOrganises: true,
-    circuits: true,
-    cruises: true,
-    languageStays: true,
-    greatDeals: true,
     omra: true,
-    visa: true,
-    mice: true,
+    voyagesOrganises: true,
     gallery: true,
+    circuits: false,
+    cruises: false,
+    languageStays: false,
+    greatDeals: false,
+    visa: false,
+    mice: false,
   },
-  // Airline/partner logo ids from src/lib/partners.ts — [] hides the strip.
-  partners: ["qatar", "airarabia", "etihad", "emirates", "ram", "turkish"],
+  partners: ["ram"],
   seo: {
-    title: "Votre Agence — Agence de voyages",
+    title: "Mobaraka Tourisme & Voyage — Omra, Hajj et voyages organisés",
     description:
-      "Voyages organisés, circuits, OMRA & Hajj et voyages d'affaires — accompagnement complet du départ au retour.",
+      "Agence de tourisme et de voyages à Témara : programmes Omra et Hajj encadrés, vols directs et voyages organisés.",
   },
-  // "local" runs on the bundled demo content (no backend needed).
-  // Switch to { source: "wordpress", url: "https://cms.client.ma" } once the
-  // client's WordPress is up — see docs/wordpress/travel-cms.php.
   data: { source: "local" },
 };
