@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" width="420" height="120" role="img" aria-label="Votre Agence">
+  <!-- Placeholder wordmark for DARK surfaces (navy header pill / footer).
+       Replace with the client's on-dark logo, or drop `logoOnDark` from
+       agency.ts if their logo works on both. -->
+  <g transform="translate(10 18)">
+    <circle cx="42" cy="42" r="40" fill="none" stroke="#ffffff" stroke-width="4" />
+    <path d="M22 46 L62 30 L54 46 L62 62 Z" fill="#e0a83b" />
+    <circle cx="42" cy="42" r="40" fill="none" stroke="#ffffff" stroke-width="4" stroke-dasharray="4 10" opacity="0.45" />
+  </g>
+  <text x="108" y="52" font-family="Alexandria, Montserrat, system-ui, sans-serif" font-size="30" font-weight="700" letter-spacing="1" fill="#ffffff">VOTRE AGENCE</text>
+  <text x="110" y="80" font-family="Montserrat, system-ui, sans-serif" font-size="15" letter-spacing="3.5" fill="#e0a83b">V O Y A G E S</text>
+</svg>

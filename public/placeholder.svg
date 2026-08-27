@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c8dde6"/>
+      <stop offset="1" stop-color="#eef4f6"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#sky)"/>
+  <!-- sun -->
+  <circle cx="630" cy="330" r="90" fill="#f3ddb0"/>
+  <!-- mountains -->
+  <path d="M0 820 L260 480 L420 700 L560 540 L900 860 L900 1200 L0 1200 Z" fill="#9db8c4"/>
+  <path d="M0 940 L180 720 L400 900 L640 700 L900 960 L900 1200 L0 1200 Z" fill="#7d9dab"/>
+  <!-- plane -->
+  <g transform="translate(180,240) rotate(-12)" fill="#ffffff" opacity="0.9">
+    <path d="M0 24 L150 12 L196 0 L166 26 L150 36 L0 30 Z"/>
+    <path d="M96 20 L128 58 L112 60 L78 24 Z"/>
+    <path d="M96 20 L120 -18 L104 -18 L74 18 Z"/>
+  </g>
+</svg>

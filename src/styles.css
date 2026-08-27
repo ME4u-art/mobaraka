@@ -1,0 +1,285 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+/* Real terratour.ma type system: Montserrat (body) · Alexandria (headings) · Caveat (handwritten accents) */
+@import "@fontsource/montserrat/400.css";
+@import "@fontsource/montserrat/500.css";
+@import "@fontsource/montserrat/600.css";
+@import "@fontsource/montserrat/700.css";
+@import "@fontsource/alexandria/500.css";
+@import "@fontsource/alexandria/600.css";
+@import "@fontsource/alexandria/700.css";
+@import "@fontsource/alexandria/800.css";
+@import "@fontsource/caveat/500.css";
+@import "@fontsource/caveat/700.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Alexandria", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-hand: "Caveat", ui-serif, cursive;
+  --color-hand: var(--hand);
+  --color-brand: var(--brand);
+  --color-brand-yellow: var(--brand-yellow);
+  --color-navy: var(--navy);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sand: var(--sand);
+  --color-ink: var(--ink);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /*
+   * FOUR SEED COLORS — defaults only. Each client's real values are injected
+   * at runtime from src/config/agency.ts (inline <style> in __root.tsx).
+   * Every other color below DERIVES from these seeds via color-mix(), so a
+   * client rebrand = editing agency.ts theme, nothing else.
+   */
+  --brand: #1a9cc0; /* agency.theme.brand */
+  --hand: #ef6b45; /* agency.theme.accent */
+  --brand-yellow: #e0a83b; /* agency.theme.highlight */
+  --navy: #16232f; /* agency.theme.navy */
+
+  /* ——— Derived palette (do not hardcode hex below this line) ——— */
+  --background: color-mix(in oklab, var(--brand) 2%, white);
+  --foreground: var(--navy);
+  --ink: var(--navy);
+  --sand: color-mix(in oklab, var(--brand) 8%, white);
+
+  --card: #ffffff;
+  --card-foreground: var(--navy);
+  --popover: #ffffff;
+  --popover-foreground: var(--navy);
+
+  --primary: var(--brand);
+  --primary-foreground: #ffffff;
+  --secondary: color-mix(in oklab, var(--brand) 13%, white);
+  --secondary-foreground: color-mix(in oklab, var(--brand) 65%, var(--navy));
+  --muted: color-mix(in oklab, var(--brand) 6%, white);
+  --muted-foreground: color-mix(in oklab, var(--navy) 62%, white);
+  --accent: var(--hand);
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.6 0.24 27);
+  --destructive-foreground: #ffffff;
+  --border: color-mix(in oklab, var(--brand) 14%, #e9eef1);
+  --input: color-mix(in oklab, var(--brand) 14%, #e9eef1);
+  --ring: var(--brand);
+
+  --gradient-hero: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.62),
+    rgba(0, 0, 0, 0.18) 45%,
+    transparent 75%
+  );
+  --gradient-warm: linear-gradient(
+    135deg,
+    var(--brand),
+    color-mix(in oklab, var(--brand) 55%, white)
+  );
+  --gradient-cool: linear-gradient(135deg, var(--brand), var(--navy));
+  --shadow-soft: 0 4px 20px -8px rgba(42, 36, 32, 0.15);
+  --shadow-lift: 0 30px 60px -30px rgba(42, 36, 32, 0.35);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  img {
+    display: block;
+    max-width: 100%;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  /* Visible keyboard focus everywhere — derived from the brand seed */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* Handwritten section label (Caveat) — terratour's signature eyebrow */
+@utility eyebrow-hand {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--brand-yellow);
+}
+
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  max-width: 1240px;
+}
+
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+    box-shadow:
+      var(--shadow-soft),
+      0 10px 24px -12px color-mix(in oklab, var(--brand) 55%, transparent);
+  }
+}
+
+@utility btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, white 85%, transparent);
+  color: var(--ink);
+  font-weight: 600;
+  border: 1px solid var(--border);
+  backdrop-filter: blur(6px);
+}
+
+/* Skeleton loading — shimmer sweep tinted from the brand seed (static when reduced motion) */
+@keyframes skeleton-sweep {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@utility skeleton {
+  background-image: linear-gradient(
+    100deg,
+    color-mix(in oklab, var(--brand) 7%, white) 40%,
+    color-mix(in oklab, var(--brand) 15%, white) 50%,
+    color-mix(in oklab, var(--brand) 7%, white) 60%
+  );
+  background-size: 200% 100%;
+  background-color: color-mix(in oklab, var(--brand) 7%, white);
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: skeleton-sweep 1.8s ease-in-out infinite;
+  }
+}
+
+/* Partners logo strip — seamless infinite scroll (paused on hover, static when reduced motion) */
+@keyframes partners-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+
+@utility partners-track {
+  display: flex;
+  width: max-content;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: partners-scroll 25s linear infinite;
+  }
+}
+
+.partners-track:hover {
+  animation-play-state: paused;
+}
+
+/* Card rise-in — runs fresh on every mount (keyed remounts re-trigger it),
+   so filtered grids like the OMRA chooser never leave a card stuck hidden.
+   No animation under reduced motion → the card is simply visible. */
+@keyframes card-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility card-rise {
+  /* No fill-mode: if the animation never runs (paused tab, reduced motion,
+     unsupported), the card rests at its natural opacity 1 — never stuck hidden. */
+  @media (prefers-reduced-motion: no-preference) {
+    animation: card-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* Hero slideshow — slow Ken Burns drift on the active photo (static when reduced motion) */
+@keyframes hero-kenburns {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.hero-kenburns {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: hero-kenburns 7s ease-out forwards;
+  }
+}
