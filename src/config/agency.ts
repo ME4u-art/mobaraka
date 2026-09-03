@@ -145,8 +145,8 @@ export const agency: AgencyConfig = {
     cruises: true,
     languageStays: true,
     greatDeals: true,
-    visa: false,
-    mice: false,
+    visa: true,
+    mice: true,
   },
   partners: [],
   seo: {
