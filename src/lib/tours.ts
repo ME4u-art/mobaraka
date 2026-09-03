@@ -133,6 +133,211 @@ export const voyagesOrganises: Tour[] = [
     ],
     options: ["Les trois excursions : 300 dh par personne"],
   },
+  // ---------------------------------------------------------------------
+  // DEMO CONTENT — invented programmes written to show the client what a
+  // full page looks like. Prices are round demo figures, not real quotes.
+  // Delete both once the agency sends their own programmes.
+  // ---------------------------------------------------------------------
+  {
+    slug: "istanbul-demo",
+    title: "Istanbul — entre deux continents",
+    subtitle: "La Corne d'Or, le Bosphore et les grands bazars",
+    duration: "6 jours / 5 nuits",
+    dates: "Départs chaque samedi",
+    price: "8 900 dh",
+    priceNote: "Par personne en chambre double, vol et petit déjeuner inclus.",
+    // Stand-in image — à remplacer par une vraie photo d'Istanbul.
+    image: hero,
+    region: "Turquie",
+    airline: "Turkish Airlines",
+    overview:
+      "Six jours pour traverser Istanbul d'une rive à l'autre : les mosquées et les palais de la vieille ville le matin, les quartiers vivants de la rive européenne l'après-midi, et une croisière sur le Bosphore au coucher du soleil.",
+    route: ["Casablanca", "Istanbul", "Casablanca"],
+    highlights: [
+      "Sainte-Sophie et la Mosquée Bleue",
+      "Croisière sur le Bosphore au coucher du soleil",
+      "Grand Bazar et bazar aux épices",
+      "Palais de Topkapi et ses jardins",
+    ],
+    included: [
+      "Billet d'avion aller-retour au départ de Casablanca",
+      "5 nuits en hôtel 4* avec petit déjeuner",
+      "Transferts aéroport - hôtel - aéroport",
+      "Guide francophone pour les visites du programme",
+      "Croisière sur le Bosphore",
+    ],
+    notIncluded: [
+      "Les déjeuners et les dîners",
+      "Les entrées des musées non citées",
+      "L'assurance voyage",
+      "Les dépenses personnelles",
+    ],
+    itinerary: [
+      {
+        day: "Jour 1",
+        title: "Envol vers Istanbul",
+        description:
+          "Départ de Casablanca, accueil à l'aéroport d'Istanbul et transfert à l'hôtel. Soirée libre.",
+        meals: ["Dîner"],
+      },
+      {
+        day: "Jour 2",
+        title: "La vieille ville",
+        description:
+          "Sainte-Sophie, la Mosquée Bleue et l'Hippodrome à pied, puis après-midi au Grand Bazar.",
+        meals: ["Petit déjeuner"],
+      },
+      {
+        day: "Jour 3",
+        title: "Topkapi et la Corne d'Or",
+        description:
+          "Visite du palais de Topkapi le matin, promenade dans le quartier de Balat l'après-midi.",
+        meals: ["Petit déjeuner"],
+      },
+      {
+        day: "Jour 4",
+        title: "Croisière sur le Bosphore",
+        description:
+          "Navigation entre les deux rives, arrêt sur la rive asiatique et retour au coucher du soleil.",
+        meals: ["Petit déjeuner"],
+      },
+      {
+        day: "Jour 5",
+        title: "Journée libre",
+        description: "Shopping à Istiklal, ou excursion en option vers les îles aux Princes.",
+        meals: ["Petit déjeuner"],
+      },
+      {
+        day: "Jour 6",
+        title: "Retour",
+        description: "Transfert vers l'aéroport et vol retour sur Casablanca.",
+        meals: ["Petit déjeuner"],
+      },
+    ],
+    hebergement: [
+      { city: "Istanbul", nights: "5 nuits", hotels: "Hôtel 4* quartier Sultanahmet ou Taksim" },
+    ],
+    priceTables: [
+      {
+        title: "Prix par personne (dh)",
+        columns: ["Formule", "Chambre double", "Chambre triple", "Chambre single"],
+        columnRoles: [
+          { kind: "adultDouble" },
+          { kind: "adultTriple" },
+          { kind: "single", mode: "total" },
+        ],
+        rows: [
+          { label: "Hôtel 4*", cells: ["8 900", "8 500", "11 200"] },
+          { label: "Hôtel 5*", cells: ["11 500", "10 900", "14 800"] },
+        ],
+      },
+    ],
+    options: [
+      "Excursion aux îles aux Princes : 450 dh par personne",
+      "Dîner-spectacle sur le Bosphore : 600 dh par personne",
+    ],
+    notes: [
+      "Passeport valable 6 mois après la date de retour.",
+      "Inscription confirmée après versement d'un acompte de 50%.",
+    ],
+    departures: ["Samedi 12/09/2026", "Samedi 26/09/2026", "Samedi 10/10/2026"],
+  },
+  {
+    slug: "dubai-demo",
+    title: "Dubaï — la ville verticale",
+    subtitle: "Gratte-ciel, désert et souks au bord du Golfe",
+    duration: "5 jours / 4 nuits",
+    dates: "Départs toute l'année",
+    price: "12 500 dh",
+    priceNote: "Par personne en chambre double, vol et petit déjeuner inclus.",
+    // Stand-in image — à remplacer par une vraie photo de Dubaï.
+    image: hero,
+    region: "Émirats arabes unis",
+    airline: "Emirates",
+    overview:
+      "Quatre nuits pour voir les deux visages de Dubaï : la ville de verre avec le Burj Khalifa et la marina, et le désert avec un safari en 4x4 et un dîner sous tente.",
+    route: ["Casablanca", "Dubaï", "Casablanca"],
+    highlights: [
+      "Burj Khalifa, étages 124 et 125",
+      "Safari dans le désert et dîner sous tente",
+      "Souk de l'or et souk aux épices de Deira",
+      "Dubaï Marina et la plage de Jumeirah",
+    ],
+    included: [
+      "Billet d'avion aller-retour au départ de Casablanca",
+      "4 nuits en hôtel 4* avec petit déjeuner",
+      "Transferts aéroport - hôtel - aéroport",
+      "Safari dans le désert avec dîner",
+      "Tour de ville guidé en français",
+    ],
+    notIncluded: [
+      "Le visa émirati",
+      "Les déjeuners et les dîners hors safari",
+      "L'assurance voyage",
+      "Les dépenses personnelles",
+    ],
+    itinerary: [
+      {
+        day: "Jour 1",
+        title: "Arrivée à Dubaï",
+        description: "Vol depuis Casablanca, accueil et transfert à l'hôtel. Soirée libre.",
+        meals: ["Dîner"],
+      },
+      {
+        day: "Jour 2",
+        title: "Tour de ville",
+        description:
+          "Mosquée de Jumeirah, quartier historique d'Al Fahidi, traversée de la crique en abra et souks de Deira.",
+        meals: ["Petit déjeuner"],
+      },
+      {
+        day: "Jour 3",
+        title: "Safari dans le désert",
+        description:
+          "Matinée libre, puis départ en 4x4 dans les dunes, coucher de soleil et dîner sous tente.",
+        meals: ["Petit déjeuner", "Dîner"],
+      },
+      {
+        day: "Jour 4",
+        title: "Burj Khalifa et la marina",
+        description: "Montée au sommet du Burj Khalifa, Dubai Mall, puis promenade à Dubaï Marina.",
+        meals: ["Petit déjeuner"],
+      },
+      {
+        day: "Jour 5",
+        title: "Retour",
+        description: "Temps libre selon l'horaire du vol, transfert et retour sur Casablanca.",
+        meals: ["Petit déjeuner"],
+      },
+    ],
+    hebergement: [
+      { city: "Dubaï", nights: "4 nuits", hotels: "Hôtel 4* quartier Deira ou Bur Dubaï" },
+    ],
+    priceTables: [
+      {
+        title: "Prix par personne (dh)",
+        columns: ["Formule", "Chambre double", "Chambre triple", "Chambre single"],
+        columnRoles: [
+          { kind: "adultDouble" },
+          { kind: "adultTriple" },
+          { kind: "single", mode: "total" },
+        ],
+        rows: [
+          { label: "Hôtel 4*", cells: ["12 500", "11 900", "15 900"] },
+          { label: "Hôtel 5* Marina", cells: ["16 900", "15 900", "21 500"] },
+        ],
+      },
+    ],
+    options: [
+      "Excursion à Abou Dhabi et mosquée Cheikh Zayed : 850 dh par personne",
+      "Croisière dîner sur la crique : 500 dh par personne",
+    ],
+    notes: [
+      "Passeport valable 6 mois après la date de retour.",
+      "Visa émirati à prévoir, l'agence s'occupe du dossier.",
+    ],
+    departures: ["Jeudi 17/09/2026", "Jeudi 15/10/2026", "Jeudi 12/11/2026"],
+  },
 ];
 
 export const croisieres: Tour[] = [
