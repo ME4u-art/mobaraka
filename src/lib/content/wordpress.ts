@@ -305,6 +305,14 @@ export function createWordPressProvider(wpUrl: string): ContentProvider {
   let photoCache: { at: number; posts: WpPost[] } | null = null;
   let homeCache: { at: number; sections: HomeSections | null } | null = null;
   const TTL_MS = 30_000;
+  // Negative cache. All four getters hit the same host, so once one fetch fails
+  // the rest will too — and each would burn its own 8s timeout, turning a dead
+  // WordPress into a 60s page load. Remember the failure and skip the wait.
+  // Self-healing: the gate simply expires, no reset needed.
+  // ponytail: one request per cooldown still pays the full timeout. If that
+  // matters, serve stale immediately and refresh in the background instead.
+  const DOWN_MS = 10_000;
+  let downUntil = 0;
 
   /**
    * Resilience: if WordPress is down, serve the last successful fetch (even
@@ -313,6 +321,7 @@ export function createWordPressProvider(wpUrl: string): ContentProvider {
    */
   const posts = async (): Promise<WpPost[] | null> => {
     if (cache && Date.now() - cache.at < TTL_MS) return cache.posts;
+    if (Date.now() < downUntil) return cache?.posts ?? null;
     try {
       const fetched = await fetchProgrammes(wpUrl);
       cache = { at: Date.now(), posts: fetched };
@@ -322,6 +331,7 @@ export function createWordPressProvider(wpUrl: string): ContentProvider {
         `[content] WordPress unreachable (${wpUrl}) — ${cache ? "serving last known content" : "falling back to local data"}`,
         err,
       );
+      downUntil = Date.now() + DOWN_MS;
       return cache?.posts ?? null;
     }
   };
@@ -329,6 +339,7 @@ export function createWordPressProvider(wpUrl: string): ContentProvider {
   /** Same resilience pattern for the omra CPT. */
   const omraPosts = async (): Promise<WpPost[] | null> => {
     if (omraCache && Date.now() - omraCache.at < TTL_MS) return omraCache.posts;
+    if (Date.now() < downUntil) return omraCache?.posts ?? null;
     try {
       // oldest-first: the first program created stays first (hero slide, teaser order)
       const url = `${wpUrl.replace(/\/$/, "")}/wp-json/wp/v2/omra-programmes?per_page=100&_embed&acf_format=standard&orderby=date&order=asc`;
@@ -345,6 +356,7 @@ export function createWordPressProvider(wpUrl: string): ContentProvider {
         `[content] omra WP unreachable (${wpUrl}) — ${omraCache ? "serving last known content" : "falling back to local data"}`,
         err,
       );
+      downUntil = Date.now() + DOWN_MS;
       return omraCache?.posts ?? null;
     }
   };
@@ -352,6 +364,7 @@ export function createWordPressProvider(wpUrl: string): ContentProvider {
   /** Same resilience pattern for the gallery `photo` CPT. */
   const photoPosts = async (): Promise<WpPost[] | null> => {
     if (photoCache && Date.now() - photoCache.at < TTL_MS) return photoCache.posts;
+    if (Date.now() < downUntil) return photoCache?.posts ?? null;
     try {
       // menu_order first so the client can drag photos into the order they want
       // (Attributs de la page → Ordre); ties fall back to newest first.
@@ -369,6 +382,7 @@ export function createWordPressProvider(wpUrl: string): ContentProvider {
         `[content] gallery WP unreachable (${wpUrl}) — ${photoCache ? "serving last known content" : "falling back to demo photos"}`,
         err,
       );
+      downUntil = Date.now() + DOWN_MS;
       return photoCache?.posts ?? null;
     }
   };
@@ -426,6 +440,7 @@ export function createWordPressProvider(wpUrl: string): ContentProvider {
     },
     getHomeSections: async () => {
       if (homeCache && Date.now() - homeCache.at < TTL_MS) return homeCache.sections;
+      if (Date.now() < downUntil) return homeCache?.sections ?? null;
       try {
         const url = `${wpUrl.replace(/\/$/, "")}/wp-json/travel-cms/v1/home`;
         const res = await fetch(url, {
@@ -442,6 +457,7 @@ export function createWordPressProvider(wpUrl: string): ContentProvider {
           `[content] home settings unreachable (${wpUrl}) — using automatic home layout`,
           err,
         );
+        downUntil = Date.now() + DOWN_MS;
         return homeCache?.sections ?? null;
       }
     },

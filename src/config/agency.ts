@@ -142,13 +142,13 @@ export const agency: AgencyConfig = {
     voyagesOrganises: true,
     gallery: true,
     circuits: false,
-    cruises: false,
-    languageStays: false,
-    greatDeals: false,
+    cruises: true,
+    languageStays: true,
+    greatDeals: true,
     visa: false,
     mice: false,
   },
-  partners: ["ram"],
+  partners: [],
   seo: {
     title: "Mobaraka Tourisme & Voyage — Omra, Hajj et voyages organisés",
     description:

@@ -2,11 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "mother-dev",
+      "name": "mobaraka-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "8080"],
-      "cwd": "C:\\Users\\Administrateur\\Desktop\\MotherTemplate",
-      "port": 8080,
+      "runtimeArgs": ["run", "dev", "--", "--port", "5182"],
+      "port": 5182,
       "autoPort": true
     }
   ]
