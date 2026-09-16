@@ -144,6 +144,15 @@ export const agency: AgencyConfig = {
       ar: "رقم 3471، المحل رقم 1، حي الوفاق، تمارة",
     },
     mapQuery: "Mobaraka Tourisme et Voyage, Al Wifaq, Témara",
+    // Coordinates rather than a search string, so the embed can carry !2sma -
+    // the region field Google uses for disputed borders. Without it the map
+    // splits Western Sahara off Morocco with a dashed line, and a ?q= embed
+    // cannot carry the field at all.
+    //
+    // 33.9235395, -6.9316651 = Bd Dr Abdelkrim El Khatteb, Temara. Geocoded,
+    // not confirmed: it centres on their boulevard, not their door.
+    mapEmbedUrl:
+      "https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3000!2d-6.9316651!3d33.9235395!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sfr!2sma!4v1758000000000!5m2!1sfr!2sma",
   },
   socials: {},
   features: {

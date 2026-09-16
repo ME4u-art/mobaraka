@@ -163,6 +163,11 @@ function ContactMap() {
         className={`h-[320px] w-full border-0 sm:h-[420px] ${live ? "" : "pointer-events-none"}`}
       />
       {!live && (
+        <span className="pointer-events-none absolute inset-0 grid place-items-center">
+          <MapPin className="h-9 w-9 -translate-y-2 text-primary drop-shadow-md" strokeWidth={2.5} />
+        </span>
+      )}
+      {!live && (
         <button
           type="button"
           onClick={() => setLive(true)}
