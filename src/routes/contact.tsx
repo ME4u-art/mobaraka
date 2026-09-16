@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -124,18 +125,51 @@ export const Route = createFileRoute("/contact")({
 
       {/* Carte — Google Maps sans clé API, la requête vient d'agency.ts */}
       <section className="container-page pb-20">
-        <div className="overflow-hidden rounded-3xl border border-border shadow-[var(--shadow-soft)]">
-          <iframe
-            title={`Localisation de ${agency.identity.name}`}
-            src={`https://www.google.com/maps?q=${encodeURIComponent(agency.contact.mapQuery)}&output=embed`}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="h-[320px] w-full border-0 sm:h-[420px]"
-          />
-        </div>
+        <ContactMap />
       </section>
 
       <Footer />
     </div>
   ),
 });
+
+
+/**
+ * Own component only so it can hold a hook: the contact route is an inline
+ * arrow with no body.
+ *
+ * Google draws disputed borders from the region encoded in the embed. The
+ * ?q= form carries none, so it splits Western Sahara off Morocco with a
+ * dashed line - hence z=16, where no national border is drawn, and hence
+ * mapEmbedUrl for a "Share -> Embed a map" URL ending in !2sma.
+ *
+ * The embed also turns the page's scroll wheel into a zoom, so scrolling
+ * past the contact section used to zoom the map out to that country view.
+ * One click hands control over deliberately.
+ */
+function ContactMap() {
+  const [live, setLive] = useState(false);
+  const src =
+    agency.contact.mapEmbedUrl ??
+    `https://www.google.com/maps?q=${encodeURIComponent(agency.contact.mapQuery)}&output=embed&z=16`;
+
+  return (
+    <div className="relative overflow-hidden rounded-3xl border border-border shadow-[var(--shadow-soft)]">
+      <iframe
+        title={`Localisation de ${agency.identity.name}`}
+        src={src}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        className={`h-[320px] w-full border-0 sm:h-[420px] ${live ? "" : "pointer-events-none"}`}
+      />
+      {!live && (
+        <button
+          type="button"
+          onClick={() => setLive(true)}
+          aria-label="Activer la carte"
+          className="absolute inset-0 h-full w-full cursor-pointer bg-transparent"
+        />
+      )}
+    </div>
+  );
+}

@@ -60,6 +60,15 @@ export type AgencyConfig = {
     addresses: { fr: string; ar?: string };
     /** Query string for the Google Maps embed on the contact page */
     mapQuery: string;
+    /**
+     * A full "Share -> Embed a map" URL from Google Maps, used verbatim in
+     * place of `mapQuery`. Required in practice for a Moroccan client:
+     * Google draws disputed borders from the region encoded in the embed,
+     * and only this URL form carries one. Generated in Morocco it ends in
+     * `!2sma` and shows the country whole; the plain ?q= form splits
+     * Western Sahara off with a dashed line, and gl/region do not fix it.
+     */
+    mapEmbedUrl?: string;
   };
   socials: {
     facebook?: string;
