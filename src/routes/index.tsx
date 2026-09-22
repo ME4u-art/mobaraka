@@ -254,8 +254,8 @@ function Hero({ tours, voyages, omra }: { tours: Tour[]; voyages: Tour[]; omra: 
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-col items-center text-center"
             >
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/15 px-4 py-1.5 text-[11px] font-medium uppercase tracking-widest text-white backdrop-blur sm:text-xs">
-                <Sparkles className="h-3.5 w-3.5" /> {slide.badge}
+              <span className="inline-flex items-center rounded-full border border-white/40 bg-white/15 px-4 py-1.5 text-[11px] font-medium uppercase tracking-widest text-white backdrop-blur sm:text-xs">
+                {slide.badge}
               </span>
               <h1 className="mt-5 font-display text-[2.5rem] leading-[1.05] text-white drop-shadow-md sm:mt-6 sm:text-5xl sm:leading-[1.05] md:text-6xl lg:text-7xl">
                 {slide.accent ? (
