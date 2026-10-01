@@ -5,13 +5,6 @@ import ministereTourisme from "@/assets/footer/ministere-tourisme.svg";
 import iata from "@/assets/footer/iata.svg";
 import { agency, isEnabled } from "@/config/agency";
 
-const legalLinks = [
-  "Mentions légales",
-  "CGU",
-  "Politique de confidentialité",
-  "Politique de cookies",
-];
-
 const footerAddresses = [agency.contact.addresses.fr];
 
 export function Footer() {
@@ -162,13 +155,11 @@ export function Footer() {
             <span>
               © {new Date().getFullYear()} {agency.identity.name} — Tous droits réservés.
             </span>
-            <div className="flex flex-wrap gap-4">
-              {legalLinks.map((label) => (
-                <a key={label} href="#" className={`underline underline-offset-2 ${hov}`}>
-                  {label}
-                </a>
-              ))}
-            </div>
+            {/* The four legal links that used to sit here — mentions légales,
+                CGU, confidentialité, cookies — all pointed at href="#". A link
+                that goes nowhere is worse than no link. MotherTemplate now ships
+                a real /mentions-legales gated on `agency.legal`; pull it down and
+                fill that block from the client's RC extract to restore one. */}
           </div>
         </div>
       </footer>
