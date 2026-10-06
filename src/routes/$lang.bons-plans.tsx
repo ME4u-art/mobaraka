@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useLocale, useT, tFor } from "@/i18n";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { TourCard } from "@/components/site/TourCard";
@@ -8,57 +9,46 @@ import { agency, isEnabled, notFoundHead } from "@/config/agency";
 import { content } from "@/lib/content";
 import { ListingSkeleton } from "@/components/site/Skeleton";
 
-export const Route = createFileRoute("/bons-plans")({
+export const Route = createFileRoute("/$lang/bons-plans")({
   beforeLoad: () => {
     if (!isEnabled("greatDeals")) throw notFound();
   },
   loader: async () => ({ deals: await content.getGreatDeals() }),
-  head: () =>
+  head: ({ params }) =>
     !isEnabled("greatDeals")
-      ? notFoundHead()
+      ? notFoundHead(tFor(params.lang)("error.notFoundTitle"))
       : {
           meta: [
-            { title: `Bons plans — ${agency.identity.name}` },
-            {
-              name: "description",
-              content:
-                "Nos offres et promotions du moment — voyages à prix réduit, places limitées.",
-            },
-            { property: "og:title", content: `Bons plans — ${agency.identity.name}` },
-            { property: "og:description", content: "Nos offres et promotions du moment." },
+            { title: `${tFor(params.lang)("nav.greatDeals")} — ${agency.identity.name}` },
+            { name: "description", content: tFor(params.lang)("meta.deals.desc") },
+            { property: "og:title", content: `${tFor(params.lang)("nav.greatDeals")} — ${agency.identity.name}` },
+            { property: "og:description", content: tFor(params.lang)("meta.deals.desc") },
           ],
         },
   component: GreatDealsPage,
-  pendingComponent: () => <ListingSkeleton eyebrow="Bons plans" title="Bons plans" />,
+  pendingComponent: ListingPending,
 });
 
 function GreatDealsPage() {
+  const lang = useLocale();
+  const t = useT();
   const { deals } = Route.useLoaderData();
   return (
     <div className="min-h-screen">
       <Header />
       <div className="pt-40 pb-16 bg-sand">
         <div className="container-page">
-          <div className="text-xs font-semibold uppercase tracking-widest text-primary">
-            Bons plans
-          </div>
-          <h1 className="mt-2 font-display text-5xl sm:text-6xl">Nos offres du moment</h1>
-          <p className="mt-4 max-w-2xl text-muted-foreground">
-            Promotions et départs à prix réduit — places limitées, premiers arrivés, premiers
-            servis.
-          </p>
+          <div className="text-xs font-semibold uppercase tracking-widest text-primary">{t("nav.greatDeals")}</div>
+          <h1 className="mt-2 font-display text-5xl sm:text-6xl">{t("nav.greatDeals")}</h1>
+          <p className="mt-4 max-w-2xl text-muted-foreground">{t("listing.dealsLead")}</p>
         </div>
       </div>
       <div className="container-page py-12">
         {deals.length === 0 ? (
           <Reveal className="mx-auto max-w-xl rounded-3xl border border-border bg-sand px-8 py-16 text-center">
-            <h2 className="font-display text-2xl sm:text-3xl">Aucune offre en ce moment</h2>
-            <p className="mt-3 text-muted-foreground">
-              Revenez bientôt, ou contactez-nous pour connaître nos meilleures dates.
-            </p>
-            <Link to="/contact" className="btn-primary mt-6 inline-flex">
-              Nous contacter
-            </Link>
+            <h2 className="font-display text-2xl sm:text-3xl">{t("listing.emptyTitle")}</h2>
+            <p className="mt-3 text-muted-foreground">{t("listing.emptyBody")}</p>
+            <Link to="/$lang/contact" params={{ lang }} className="btn-primary mt-6 inline-flex">{t("nav.contact")}</Link>
           </Reveal>
         ) : (
           <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -73,4 +63,11 @@ function GreatDealsPage() {
       <Footer />
     </div>
   );
+}
+
+/** The skeleton shown while the loader runs — a component, so it can
+ *  translate its own headings rather than take French ones as props. */
+function ListingPending() {
+  const t = useT();
+  return <ListingSkeleton eyebrow={t("nav.greatDeals")} title={t("nav.greatDeals")} />;
 }

@@ -4,38 +4,67 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
-import { agency } from "@/config/agency";
+import { addressFor, agency } from "@/config/agency";
+import { useLocale, useT, tFor } from "@/i18n";
 import { submitBooking } from "@/lib/booking";
 
-export const Route = createFileRoute("/contact")({
-  head: () => ({
+export const Route = createFileRoute("/$lang/contact")({
+  head: ({ params }) => ({
     meta: [
-      { title: `Contact — ${agency.identity.name}` },
+      { title: tFor(params.lang)("meta.contact.title") },
       {
         name: "description",
-        content: "Contactez notre équipe pour un devis, une réservation ou un renseignement.",
+        content: tFor(params.lang)("meta.contact.desc"),
       },
-      { property: "og:title", content: `Contact — ${agency.identity.name}` },
-      { property: "og:description", content: "Contactez notre équipe." },
+      { property: "og:title", content: tFor(params.lang)("meta.contact.title") },
+      { property: "og:description", content: tFor(params.lang)("meta.contact.desc") },
     ],
   }),
-  component: () => (
+  component: ContactPage,
+});
+
+function ContactPage() {
+  const t = useT();
+  const [mapLive, setMapLive] = useState(false);
+
+  // A "Share → Embed a map" URL wins when the client supplied one: it pins
+  // their actual premises, and it carries the region Google uses to decide
+  // how to draw disputed borders. The ?q= fallback carries no region, so it
+  // splits Western Sahara off from Morocco with a dashed line — which is why
+  // z=16 matters there: at street level no border is drawn at all.
+  const mapSrc =
+    agency.contact.mapEmbedUrl ??
+    `https://www.google.com/maps?q=${encodeURIComponent(agency.contact.mapQuery)}&output=embed&z=16`;
+
+  return (
     <div className="min-h-screen">
       <Header />
       <section className="pt-40 pb-16 container-page grid gap-12 md:grid-cols-2">
         <Reveal>
           <div className="text-xs font-semibold uppercase tracking-widest text-primary">
-            Contact
+            {t("footer.contact")}
           </div>
-          <h1 className="mt-2 font-display text-5xl">Parlons de votre prochain voyage.</h1>
-          <p className="mt-4 text-muted-foreground">Notre équipe vous répond sous 24h ouvrées.</p>
+          <h1 className="mt-2 font-display text-5xl">{t("contact.title")}</h1>
+          <p className="mt-4 text-muted-foreground">{t("contact.lead")}</p>
           <ul className="mt-8 space-y-4 text-sm">
             <li className="flex items-center gap-3">
               <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/15 text-primary">
                 <Phone className="h-4 w-4" />
               </span>{" "}
-              {agency.contact.phones[0]}
-              {agency.contact.fax ? ` / ${agency.contact.fax}` : ""}
+              {/* Every line the agency published, not just the first, and
+                  each dialable — these were plain text here while the header
+                  already linked them. */}
+              <bdi dir="ltr">
+                {agency.contact.phones.map((phone, i) => (
+                  <span key={phone}>
+                    {i > 0 && " / "}
+                    <a className="hover:text-primary" href={`tel:${phone.replace(/\s/g, "")}`}>
+                      {phone}
+                    </a>
+                  </span>
+                ))}
+                {agency.contact.fax ? ` / ${agency.contact.fax}` : ""}
+              </bdi>
             </li>
             <li className="flex items-center gap-3">
               <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/15 text-primary">
@@ -47,7 +76,7 @@ export const Route = createFileRoute("/contact")({
               <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/15 text-primary">
                 <MapPin className="h-4 w-4" />
               </span>{" "}
-              {agency.contact.addresses.fr}
+              {addressFor(useLocale())}
             </li>
           </ul>
         </Reveal>
@@ -60,18 +89,20 @@ export const Route = createFileRoute("/contact")({
               const value = (name: string) => String(f.get(name) ?? "");
               submitBooking({
                 kind: "contact",
-                subject: value("sujet") || "Demande de renseignement",
+                subject: value("sujet") || t("nav.contact"),
                 fields: [
-                  ["Nom", `${value("prenom")} ${value("nom")}`.trim()],
-                  ["Email", value("email")],
-                  ["Message", value("message")],
+                  [t("contact.firstName"), value("prenom")],
+                  [t("contact.lastName"), value("nom")],
+                  [t("contact.email"), value("email")],
+                  [t("contact.subject"), value("sujet")],
+                  [t("contact.message"), value("message")],
                 ],
               });
             }}
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block text-sm">
-                Prénom
+                {t("contact.firstName")}
                 <input
                   name="prenom"
                   required
@@ -79,7 +110,7 @@ export const Route = createFileRoute("/contact")({
                 />
               </label>
               <label className="block text-sm">
-                Nom
+                {t("contact.lastName")}
                 <input
                   name="nom"
                   required
@@ -88,7 +119,7 @@ export const Route = createFileRoute("/contact")({
               </label>
             </div>
             <label className="block text-sm">
-              Email
+              {t("contact.email")}
               <input
                 name="email"
                 type="email"
@@ -97,14 +128,14 @@ export const Route = createFileRoute("/contact")({
               />
             </label>
             <label className="block text-sm">
-              Sujet
+              {t("contact.subject")}
               <input
                 name="sujet"
                 className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               />
             </label>
             <label className="block text-sm">
-              Message
+              {t("contact.message")}
               <textarea
                 name="message"
                 rows={5}
@@ -113,7 +144,7 @@ export const Route = createFileRoute("/contact")({
               />
             </label>
             <button type="submit" className="btn-primary w-full">
-              Envoyer
+              {t("contact.send")}
             </button>
             <a
               href={`https://wa.me/${agency.contact.whatsapp.replace(/[^0-9]/g, "")}`}
@@ -121,7 +152,7 @@ export const Route = createFileRoute("/contact")({
               rel="noreferrer"
               className="btn-ghost w-full justify-center"
             >
-              Ou contactez-nous sur WhatsApp
+              {t("contact.whatsapp")}
             </a>
           </form>
         </Reveal>
@@ -129,56 +160,36 @@ export const Route = createFileRoute("/contact")({
 
       {/* Carte — Google Maps sans clé API, la requête vient d'agency.ts */}
       <section className="container-page pb-20">
-        <ContactMap />
+        <div className="relative overflow-hidden rounded-3xl border border-border shadow-[var(--shadow-soft)]">
+          <iframe
+            title={t("contact.mapTitle")}
+            src={mapSrc}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className={`h-[320px] w-full border-0 sm:h-[420px] ${mapLive ? "" : "pointer-events-none"}`}
+          />
+          {/* No marker overlay here. The premise used to be that a `?q=` embed
+              draws none of its own and needed one painting on top — untrue: any
+              `?q=` Google can resolve, a business name or a bare lat/long, gets
+              Google's own marker, and a place match brings its info card too.
+              The overlay simply landed a second pin on the first, and being
+              CSS-centred it drifted off the building the moment anyone panned. */}
+          {/* The embed swallows the page's scroll wheel and turns it into a
+              zoom, so scrolling past the contact page silently zooms the map
+              out to a view of the whole region. One click hands control over
+              deliberately. */}
+          {!mapLive && (
+            <button
+              type="button"
+              onClick={() => setMapLive(true)}
+              aria-label={t("contact.mapActivate")}
+              className="absolute inset-0 h-full w-full cursor-pointer bg-transparent"
+            />
+          )}
+        </div>
       </section>
 
       <Footer />
-    </div>
-  ),
-});
-
-
-/**
- * Own component only so it can hold a hook: the contact route is an inline
- * arrow with no body.
- *
- * Google draws disputed borders from the region encoded in the embed. The
- * ?q= form carries none, so it splits Western Sahara off Morocco with a
- * dashed line - hence z=16, where no national border is drawn, and hence
- * mapEmbedUrl for a "Share -> Embed a map" URL ending in !2sma.
- *
- * The embed also turns the page's scroll wheel into a zoom, so scrolling
- * past the contact section used to zoom the map out to that country view.
- * One click hands control over deliberately.
- */
-function ContactMap() {
-  const [live, setLive] = useState(false);
-  const src =
-    agency.contact.mapEmbedUrl ??
-    `https://www.google.com/maps?q=${encodeURIComponent(agency.contact.mapQuery)}&output=embed&z=16`;
-
-  return (
-    <div className="relative overflow-hidden rounded-3xl border border-border shadow-[var(--shadow-soft)]">
-      <iframe
-        title={`Localisation de ${agency.identity.name}`}
-        src={src}
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-        className={`h-[320px] w-full border-0 sm:h-[420px] ${live ? "" : "pointer-events-none"}`}
-      />
-      {!live && (
-        <span className="pointer-events-none absolute inset-0 grid place-items-center">
-          <MapPin className="h-9 w-9 -translate-y-2 text-primary drop-shadow-md" strokeWidth={2.5} />
-        </span>
-      )}
-      {!live && (
-        <button
-          type="button"
-          onClick={() => setLive(true)}
-          aria-label="Activer la carte"
-          className="absolute inset-0 h-full w-full cursor-pointer bg-transparent"
-        />
-      )}
     </div>
   );
 }

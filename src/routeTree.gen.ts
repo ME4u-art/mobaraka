@@ -9,69 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VoyagesOrganisesRouteImport } from './routes/voyages-organises'
-import { Route as VisaRouteImport } from './routes/visa'
-import { Route as SejoursLinguistiquesRouteImport } from './routes/sejours-linguistiques'
-import { Route as MiceRouteImport } from './routes/mice'
-import { Route as GalleryRouteImport } from './routes/gallery'
-import { Route as CroisieresRouteImport } from './routes/croisieres'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as CircuitsRouteImport } from './routes/circuits'
-import { Route as BonsPlansRouteImport } from './routes/bons-plans'
-import { Route as AProposRouteImport } from './routes/a-propos'
+import { Route as LangRouteImport } from './routes/$lang'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as OmraIndexRouteImport } from './routes/omra.index'
-import { Route as VoyagesSlugRouteImport } from './routes/voyages.$slug'
-import { Route as OmraSlugRouteImport } from './routes/omra.$slug'
+import { Route as LangIndexRouteImport } from './routes/$lang.index'
+import { Route as LangVoyagesOrganisesRouteImport } from './routes/$lang.voyages-organises'
+import { Route as LangVisaRouteImport } from './routes/$lang.visa'
+import { Route as LangSejoursLinguistiquesRouteImport } from './routes/$lang.sejours-linguistiques'
+import { Route as LangPanierRouteImport } from './routes/$lang.panier'
+import { Route as LangMiceRouteImport } from './routes/$lang.mice'
+import { Route as LangMentionsLegalesRouteImport } from './routes/$lang.mentions-legales'
+import { Route as LangGalleryRouteImport } from './routes/$lang.gallery'
+import { Route as LangCroisieresRouteImport } from './routes/$lang.croisieres'
+import { Route as LangContactRouteImport } from './routes/$lang.contact'
+import { Route as LangCircuitsRouteImport } from './routes/$lang.circuits'
+import { Route as LangBonsPlansRouteImport } from './routes/$lang.bons-plans'
+import { Route as LangAProposRouteImport } from './routes/$lang.a-propos'
+import { Route as LangOmraIndexRouteImport } from './routes/$lang.omra.index'
+import { Route as LangVoyagesSlugRouteImport } from './routes/$lang.voyages.$slug'
+import { Route as LangOmraSlugRouteImport } from './routes/$lang.omra.$slug'
 
-const VoyagesOrganisesRoute = VoyagesOrganisesRouteImport.update({
-  id: '/voyages-organises',
-  path: '/voyages-organises',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VisaRoute = VisaRouteImport.update({
-  id: '/visa',
-  path: '/visa',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SejoursLinguistiquesRoute = SejoursLinguistiquesRouteImport.update({
-  id: '/sejours-linguistiques',
-  path: '/sejours-linguistiques',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MiceRoute = MiceRouteImport.update({
-  id: '/mice',
-  path: '/mice',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GalleryRoute = GalleryRouteImport.update({
-  id: '/gallery',
-  path: '/gallery',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CroisieresRoute = CroisieresRouteImport.update({
-  id: '/croisieres',
-  path: '/croisieres',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CircuitsRoute = CircuitsRouteImport.update({
-  id: '/circuits',
-  path: '/circuits',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BonsPlansRoute = BonsPlansRouteImport.update({
-  id: '/bons-plans',
-  path: '/bons-plans',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AProposRoute = AProposRouteImport.update({
-  id: '/a-propos',
-  path: '/a-propos',
+const LangRoute = LangRouteImport.update({
+  id: '/$lang',
+  path: '/$lang',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -79,209 +38,222 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OmraIndexRoute = OmraIndexRouteImport.update({
+const LangIndexRoute = LangIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangVoyagesOrganisesRoute = LangVoyagesOrganisesRouteImport.update({
+  id: '/voyages-organises',
+  path: '/voyages-organises',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangVisaRoute = LangVisaRouteImport.update({
+  id: '/visa',
+  path: '/visa',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangSejoursLinguistiquesRoute =
+  LangSejoursLinguistiquesRouteImport.update({
+    id: '/sejours-linguistiques',
+    path: '/sejours-linguistiques',
+    getParentRoute: () => LangRoute,
+  } as any)
+const LangPanierRoute = LangPanierRouteImport.update({
+  id: '/panier',
+  path: '/panier',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangMiceRoute = LangMiceRouteImport.update({
+  id: '/mice',
+  path: '/mice',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangMentionsLegalesRoute = LangMentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangGalleryRoute = LangGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangCroisieresRoute = LangCroisieresRouteImport.update({
+  id: '/croisieres',
+  path: '/croisieres',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangContactRoute = LangContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangCircuitsRoute = LangCircuitsRouteImport.update({
+  id: '/circuits',
+  path: '/circuits',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangBonsPlansRoute = LangBonsPlansRouteImport.update({
+  id: '/bons-plans',
+  path: '/bons-plans',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangAProposRoute = LangAProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangOmraIndexRoute = LangOmraIndexRouteImport.update({
   id: '/omra/',
   path: '/omra/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LangRoute,
 } as any)
-const VoyagesSlugRoute = VoyagesSlugRouteImport.update({
+const LangVoyagesSlugRoute = LangVoyagesSlugRouteImport.update({
   id: '/voyages/$slug',
   path: '/voyages/$slug',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LangRoute,
 } as any)
-const OmraSlugRoute = OmraSlugRouteImport.update({
+const LangOmraSlugRoute = LangOmraSlugRouteImport.update({
   id: '/omra/$slug',
   path: '/omra/$slug',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LangRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/a-propos': typeof AProposRoute
-  '/bons-plans': typeof BonsPlansRoute
-  '/circuits': typeof CircuitsRoute
-  '/contact': typeof ContactRoute
-  '/croisieres': typeof CroisieresRoute
-  '/gallery': typeof GalleryRoute
-  '/mice': typeof MiceRoute
-  '/sejours-linguistiques': typeof SejoursLinguistiquesRoute
-  '/visa': typeof VisaRoute
-  '/voyages-organises': typeof VoyagesOrganisesRoute
-  '/omra/$slug': typeof OmraSlugRoute
-  '/voyages/$slug': typeof VoyagesSlugRoute
-  '/omra/': typeof OmraIndexRoute
+  '/$lang': typeof LangRouteWithChildren
+  '/$lang/a-propos': typeof LangAProposRoute
+  '/$lang/bons-plans': typeof LangBonsPlansRoute
+  '/$lang/circuits': typeof LangCircuitsRoute
+  '/$lang/contact': typeof LangContactRoute
+  '/$lang/croisieres': typeof LangCroisieresRoute
+  '/$lang/gallery': typeof LangGalleryRoute
+  '/$lang/mentions-legales': typeof LangMentionsLegalesRoute
+  '/$lang/mice': typeof LangMiceRoute
+  '/$lang/panier': typeof LangPanierRoute
+  '/$lang/sejours-linguistiques': typeof LangSejoursLinguistiquesRoute
+  '/$lang/visa': typeof LangVisaRoute
+  '/$lang/voyages-organises': typeof LangVoyagesOrganisesRoute
+  '/$lang/': typeof LangIndexRoute
+  '/$lang/omra/$slug': typeof LangOmraSlugRoute
+  '/$lang/voyages/$slug': typeof LangVoyagesSlugRoute
+  '/$lang/omra/': typeof LangOmraIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/a-propos': typeof AProposRoute
-  '/bons-plans': typeof BonsPlansRoute
-  '/circuits': typeof CircuitsRoute
-  '/contact': typeof ContactRoute
-  '/croisieres': typeof CroisieresRoute
-  '/gallery': typeof GalleryRoute
-  '/mice': typeof MiceRoute
-  '/sejours-linguistiques': typeof SejoursLinguistiquesRoute
-  '/visa': typeof VisaRoute
-  '/voyages-organises': typeof VoyagesOrganisesRoute
-  '/omra/$slug': typeof OmraSlugRoute
-  '/voyages/$slug': typeof VoyagesSlugRoute
-  '/omra': typeof OmraIndexRoute
+  '/$lang/a-propos': typeof LangAProposRoute
+  '/$lang/bons-plans': typeof LangBonsPlansRoute
+  '/$lang/circuits': typeof LangCircuitsRoute
+  '/$lang/contact': typeof LangContactRoute
+  '/$lang/croisieres': typeof LangCroisieresRoute
+  '/$lang/gallery': typeof LangGalleryRoute
+  '/$lang/mentions-legales': typeof LangMentionsLegalesRoute
+  '/$lang/mice': typeof LangMiceRoute
+  '/$lang/panier': typeof LangPanierRoute
+  '/$lang/sejours-linguistiques': typeof LangSejoursLinguistiquesRoute
+  '/$lang/visa': typeof LangVisaRoute
+  '/$lang/voyages-organises': typeof LangVoyagesOrganisesRoute
+  '/$lang': typeof LangIndexRoute
+  '/$lang/omra/$slug': typeof LangOmraSlugRoute
+  '/$lang/voyages/$slug': typeof LangVoyagesSlugRoute
+  '/$lang/omra': typeof LangOmraIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/a-propos': typeof AProposRoute
-  '/bons-plans': typeof BonsPlansRoute
-  '/circuits': typeof CircuitsRoute
-  '/contact': typeof ContactRoute
-  '/croisieres': typeof CroisieresRoute
-  '/gallery': typeof GalleryRoute
-  '/mice': typeof MiceRoute
-  '/sejours-linguistiques': typeof SejoursLinguistiquesRoute
-  '/visa': typeof VisaRoute
-  '/voyages-organises': typeof VoyagesOrganisesRoute
-  '/omra/$slug': typeof OmraSlugRoute
-  '/voyages/$slug': typeof VoyagesSlugRoute
-  '/omra/': typeof OmraIndexRoute
+  '/$lang': typeof LangRouteWithChildren
+  '/$lang/a-propos': typeof LangAProposRoute
+  '/$lang/bons-plans': typeof LangBonsPlansRoute
+  '/$lang/circuits': typeof LangCircuitsRoute
+  '/$lang/contact': typeof LangContactRoute
+  '/$lang/croisieres': typeof LangCroisieresRoute
+  '/$lang/gallery': typeof LangGalleryRoute
+  '/$lang/mentions-legales': typeof LangMentionsLegalesRoute
+  '/$lang/mice': typeof LangMiceRoute
+  '/$lang/panier': typeof LangPanierRoute
+  '/$lang/sejours-linguistiques': typeof LangSejoursLinguistiquesRoute
+  '/$lang/visa': typeof LangVisaRoute
+  '/$lang/voyages-organises': typeof LangVoyagesOrganisesRoute
+  '/$lang/': typeof LangIndexRoute
+  '/$lang/omra/$slug': typeof LangOmraSlugRoute
+  '/$lang/voyages/$slug': typeof LangVoyagesSlugRoute
+  '/$lang/omra/': typeof LangOmraIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/a-propos'
-    | '/bons-plans'
-    | '/circuits'
-    | '/contact'
-    | '/croisieres'
-    | '/gallery'
-    | '/mice'
-    | '/sejours-linguistiques'
-    | '/visa'
-    | '/voyages-organises'
-    | '/omra/$slug'
-    | '/voyages/$slug'
-    | '/omra/'
+    | '/$lang'
+    | '/$lang/a-propos'
+    | '/$lang/bons-plans'
+    | '/$lang/circuits'
+    | '/$lang/contact'
+    | '/$lang/croisieres'
+    | '/$lang/gallery'
+    | '/$lang/mentions-legales'
+    | '/$lang/mice'
+    | '/$lang/panier'
+    | '/$lang/sejours-linguistiques'
+    | '/$lang/visa'
+    | '/$lang/voyages-organises'
+    | '/$lang/'
+    | '/$lang/omra/$slug'
+    | '/$lang/voyages/$slug'
+    | '/$lang/omra/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/a-propos'
-    | '/bons-plans'
-    | '/circuits'
-    | '/contact'
-    | '/croisieres'
-    | '/gallery'
-    | '/mice'
-    | '/sejours-linguistiques'
-    | '/visa'
-    | '/voyages-organises'
-    | '/omra/$slug'
-    | '/voyages/$slug'
-    | '/omra'
+    | '/$lang/a-propos'
+    | '/$lang/bons-plans'
+    | '/$lang/circuits'
+    | '/$lang/contact'
+    | '/$lang/croisieres'
+    | '/$lang/gallery'
+    | '/$lang/mentions-legales'
+    | '/$lang/mice'
+    | '/$lang/panier'
+    | '/$lang/sejours-linguistiques'
+    | '/$lang/visa'
+    | '/$lang/voyages-organises'
+    | '/$lang'
+    | '/$lang/omra/$slug'
+    | '/$lang/voyages/$slug'
+    | '/$lang/omra'
   id:
     | '__root__'
     | '/'
-    | '/a-propos'
-    | '/bons-plans'
-    | '/circuits'
-    | '/contact'
-    | '/croisieres'
-    | '/gallery'
-    | '/mice'
-    | '/sejours-linguistiques'
-    | '/visa'
-    | '/voyages-organises'
-    | '/omra/$slug'
-    | '/voyages/$slug'
-    | '/omra/'
+    | '/$lang'
+    | '/$lang/a-propos'
+    | '/$lang/bons-plans'
+    | '/$lang/circuits'
+    | '/$lang/contact'
+    | '/$lang/croisieres'
+    | '/$lang/gallery'
+    | '/$lang/mentions-legales'
+    | '/$lang/mice'
+    | '/$lang/panier'
+    | '/$lang/sejours-linguistiques'
+    | '/$lang/visa'
+    | '/$lang/voyages-organises'
+    | '/$lang/'
+    | '/$lang/omra/$slug'
+    | '/$lang/voyages/$slug'
+    | '/$lang/omra/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AProposRoute: typeof AProposRoute
-  BonsPlansRoute: typeof BonsPlansRoute
-  CircuitsRoute: typeof CircuitsRoute
-  ContactRoute: typeof ContactRoute
-  CroisieresRoute: typeof CroisieresRoute
-  GalleryRoute: typeof GalleryRoute
-  MiceRoute: typeof MiceRoute
-  SejoursLinguistiquesRoute: typeof SejoursLinguistiquesRoute
-  VisaRoute: typeof VisaRoute
-  VoyagesOrganisesRoute: typeof VoyagesOrganisesRoute
-  OmraSlugRoute: typeof OmraSlugRoute
-  VoyagesSlugRoute: typeof VoyagesSlugRoute
-  OmraIndexRoute: typeof OmraIndexRoute
+  LangRoute: typeof LangRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/voyages-organises': {
-      id: '/voyages-organises'
-      path: '/voyages-organises'
-      fullPath: '/voyages-organises'
-      preLoaderRoute: typeof VoyagesOrganisesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/visa': {
-      id: '/visa'
-      path: '/visa'
-      fullPath: '/visa'
-      preLoaderRoute: typeof VisaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sejours-linguistiques': {
-      id: '/sejours-linguistiques'
-      path: '/sejours-linguistiques'
-      fullPath: '/sejours-linguistiques'
-      preLoaderRoute: typeof SejoursLinguistiquesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mice': {
-      id: '/mice'
-      path: '/mice'
-      fullPath: '/mice'
-      preLoaderRoute: typeof MiceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gallery': {
-      id: '/gallery'
-      path: '/gallery'
-      fullPath: '/gallery'
-      preLoaderRoute: typeof GalleryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/croisieres': {
-      id: '/croisieres'
-      path: '/croisieres'
-      fullPath: '/croisieres'
-      preLoaderRoute: typeof CroisieresRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/circuits': {
-      id: '/circuits'
-      path: '/circuits'
-      fullPath: '/circuits'
-      preLoaderRoute: typeof CircuitsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bons-plans': {
-      id: '/bons-plans'
-      path: '/bons-plans'
-      fullPath: '/bons-plans'
-      preLoaderRoute: typeof BonsPlansRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/a-propos': {
-      id: '/a-propos'
-      path: '/a-propos'
-      fullPath: '/a-propos'
-      preLoaderRoute: typeof AProposRouteImport
+    '/$lang': {
+      id: '/$lang'
+      path: '/$lang'
+      fullPath: '/$lang'
+      preLoaderRoute: typeof LangRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -291,45 +263,164 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/omra/': {
-      id: '/omra/'
+    '/$lang/': {
+      id: '/$lang/'
+      path: '/'
+      fullPath: '/$lang/'
+      preLoaderRoute: typeof LangIndexRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/voyages-organises': {
+      id: '/$lang/voyages-organises'
+      path: '/voyages-organises'
+      fullPath: '/$lang/voyages-organises'
+      preLoaderRoute: typeof LangVoyagesOrganisesRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/visa': {
+      id: '/$lang/visa'
+      path: '/visa'
+      fullPath: '/$lang/visa'
+      preLoaderRoute: typeof LangVisaRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/sejours-linguistiques': {
+      id: '/$lang/sejours-linguistiques'
+      path: '/sejours-linguistiques'
+      fullPath: '/$lang/sejours-linguistiques'
+      preLoaderRoute: typeof LangSejoursLinguistiquesRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/panier': {
+      id: '/$lang/panier'
+      path: '/panier'
+      fullPath: '/$lang/panier'
+      preLoaderRoute: typeof LangPanierRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/mice': {
+      id: '/$lang/mice'
+      path: '/mice'
+      fullPath: '/$lang/mice'
+      preLoaderRoute: typeof LangMiceRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/mentions-legales': {
+      id: '/$lang/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/$lang/mentions-legales'
+      preLoaderRoute: typeof LangMentionsLegalesRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/gallery': {
+      id: '/$lang/gallery'
+      path: '/gallery'
+      fullPath: '/$lang/gallery'
+      preLoaderRoute: typeof LangGalleryRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/croisieres': {
+      id: '/$lang/croisieres'
+      path: '/croisieres'
+      fullPath: '/$lang/croisieres'
+      preLoaderRoute: typeof LangCroisieresRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/contact': {
+      id: '/$lang/contact'
+      path: '/contact'
+      fullPath: '/$lang/contact'
+      preLoaderRoute: typeof LangContactRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/circuits': {
+      id: '/$lang/circuits'
+      path: '/circuits'
+      fullPath: '/$lang/circuits'
+      preLoaderRoute: typeof LangCircuitsRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/bons-plans': {
+      id: '/$lang/bons-plans'
+      path: '/bons-plans'
+      fullPath: '/$lang/bons-plans'
+      preLoaderRoute: typeof LangBonsPlansRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/a-propos': {
+      id: '/$lang/a-propos'
+      path: '/a-propos'
+      fullPath: '/$lang/a-propos'
+      preLoaderRoute: typeof LangAProposRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/omra/': {
+      id: '/$lang/omra/'
       path: '/omra'
-      fullPath: '/omra/'
-      preLoaderRoute: typeof OmraIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$lang/omra/'
+      preLoaderRoute: typeof LangOmraIndexRouteImport
+      parentRoute: typeof LangRoute
     }
-    '/voyages/$slug': {
-      id: '/voyages/$slug'
+    '/$lang/voyages/$slug': {
+      id: '/$lang/voyages/$slug'
       path: '/voyages/$slug'
-      fullPath: '/voyages/$slug'
-      preLoaderRoute: typeof VoyagesSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$lang/voyages/$slug'
+      preLoaderRoute: typeof LangVoyagesSlugRouteImport
+      parentRoute: typeof LangRoute
     }
-    '/omra/$slug': {
-      id: '/omra/$slug'
+    '/$lang/omra/$slug': {
+      id: '/$lang/omra/$slug'
       path: '/omra/$slug'
-      fullPath: '/omra/$slug'
-      preLoaderRoute: typeof OmraSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$lang/omra/$slug'
+      preLoaderRoute: typeof LangOmraSlugRouteImport
+      parentRoute: typeof LangRoute
     }
   }
 }
 
+interface LangRouteChildren {
+  LangAProposRoute: typeof LangAProposRoute
+  LangBonsPlansRoute: typeof LangBonsPlansRoute
+  LangCircuitsRoute: typeof LangCircuitsRoute
+  LangContactRoute: typeof LangContactRoute
+  LangCroisieresRoute: typeof LangCroisieresRoute
+  LangGalleryRoute: typeof LangGalleryRoute
+  LangMentionsLegalesRoute: typeof LangMentionsLegalesRoute
+  LangMiceRoute: typeof LangMiceRoute
+  LangPanierRoute: typeof LangPanierRoute
+  LangSejoursLinguistiquesRoute: typeof LangSejoursLinguistiquesRoute
+  LangVisaRoute: typeof LangVisaRoute
+  LangVoyagesOrganisesRoute: typeof LangVoyagesOrganisesRoute
+  LangIndexRoute: typeof LangIndexRoute
+  LangOmraSlugRoute: typeof LangOmraSlugRoute
+  LangVoyagesSlugRoute: typeof LangVoyagesSlugRoute
+  LangOmraIndexRoute: typeof LangOmraIndexRoute
+}
+
+const LangRouteChildren: LangRouteChildren = {
+  LangAProposRoute: LangAProposRoute,
+  LangBonsPlansRoute: LangBonsPlansRoute,
+  LangCircuitsRoute: LangCircuitsRoute,
+  LangContactRoute: LangContactRoute,
+  LangCroisieresRoute: LangCroisieresRoute,
+  LangGalleryRoute: LangGalleryRoute,
+  LangMentionsLegalesRoute: LangMentionsLegalesRoute,
+  LangMiceRoute: LangMiceRoute,
+  LangPanierRoute: LangPanierRoute,
+  LangSejoursLinguistiquesRoute: LangSejoursLinguistiquesRoute,
+  LangVisaRoute: LangVisaRoute,
+  LangVoyagesOrganisesRoute: LangVoyagesOrganisesRoute,
+  LangIndexRoute: LangIndexRoute,
+  LangOmraSlugRoute: LangOmraSlugRoute,
+  LangVoyagesSlugRoute: LangVoyagesSlugRoute,
+  LangOmraIndexRoute: LangOmraIndexRoute,
+}
+
+const LangRouteWithChildren = LangRoute._addFileChildren(LangRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AProposRoute: AProposRoute,
-  BonsPlansRoute: BonsPlansRoute,
-  CircuitsRoute: CircuitsRoute,
-  ContactRoute: ContactRoute,
-  CroisieresRoute: CroisieresRoute,
-  GalleryRoute: GalleryRoute,
-  MiceRoute: MiceRoute,
-  SejoursLinguistiquesRoute: SejoursLinguistiquesRoute,
-  VisaRoute: VisaRoute,
-  VoyagesOrganisesRoute: VoyagesOrganisesRoute,
-  OmraSlugRoute: OmraSlugRoute,
-  VoyagesSlugRoute: VoyagesSlugRoute,
-  OmraIndexRoute: OmraIndexRoute,
+  LangRoute: LangRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

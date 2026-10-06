@@ -1,9 +1,14 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useLocale, useT, tFor, isQuoteOnly, priceOrQuote } from "@/i18n";
 import { useMemo, useState } from "react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import type { PriceTable } from "@/lib/tours";
+import { localizeTour, localizeTourFor, type LocalizedTour } from "@/lib/tours";
+
+/** One table of a programme already resolved into the reader's language. */
+type LocalizedTable = NonNullable<LocalizedTour["priceTables"]>[number];
 import { content } from "@/lib/content";
+import { submitBooking } from "@/lib/booking";
 import { DetailSkeleton } from "@/components/site/Skeleton";
 import {
   Calendar,
@@ -23,7 +28,6 @@ import {
 } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { agency, isEnabled, whatsappDigits } from "@/config/agency";
-import { submitBooking } from "@/lib/booking";
 
 const WHATSAPP = whatsappDigits();
 const PHONE = agency.contact.phones[0];
@@ -41,7 +45,8 @@ const parsePrice = (s: string): number | null => {
 type Basis = "double" | "triple" | "single";
 
 /** Interactive price estimator driven by a table's columnRoles. */
-function PriceEstimator({ table }: { table: PriceTable }) {
+function PriceEstimator({ table }: { table: LocalizedTable }) {
+  const t = useT();
   const roles = table.columnRoles;
   const [rowIdx, setRowIdx] = useState(0);
   const [basis, setBasis] = useState<Basis>("double");
@@ -89,7 +94,18 @@ function PriceEstimator({ table }: { table: PriceTable }) {
     if (adultUnit == null) unavailable = true;
     else if (adults > 0)
       lines.push({
-        label: `${adults} adulte${adults > 1 ? "s" : ""} (${basis === "double" ? "ch. double" : basis === "triple" ? "ch. triple" : "ch. single"})`,
+        label: t("tour.estimateAdults")
+          .replace("{n}", String(adults))
+          .replace(
+            "{room}",
+            t(
+              basis === "double"
+                ? "hajj.roomDouble"
+                : basis === "triple"
+                  ? "hajj.roomTriple"
+                  : "tour.single",
+            ),
+          ),
         total: adultUnit * adults,
       });
 
@@ -101,7 +117,10 @@ function PriceEstimator({ table }: { table: PriceTable }) {
       if (candidates.length === 0) {
         // older than any child band → counts as an adult at the room basis
         if (adultUnit != null)
-          lines.push({ label: `1 enfant ${age} ans (tarif adulte)`, total: adultUnit });
+          lines.push({
+            label: t("tour.estimateChildAdultRate").replace("{age}", String(age)),
+            total: adultUnit,
+          });
         else unavailable = true;
         continue;
       }
@@ -114,13 +133,14 @@ function PriceEstimator({ table }: { table: PriceTable }) {
         bandCols.find((c) => c.r.ordinal === n) ?? bandCols[Math.min(n - 1, bandCols.length - 1)];
       const price = parsePrice(row.cells[col.i]);
       if (price == null) unavailable = true;
-      else lines.push({ label: `1 enfant ${age} ans`, total: price });
+      else
+        lines.push({ label: t("tour.estimateChild").replace("{age}", String(age)), total: price });
     }
 
     if (unavailable) return { unavailable: true as const };
     const total = lines.reduce((s, l) => s + l.total, 0);
     return { unavailable: false as const, lines, total };
-  }, [roles, row, basis, adults, childAges, idxDouble, idxTriple, idxSingle]);
+  }, [t, roles, row, basis, adults, childAges, idxDouble, idxTriple, idxSingle]);
 
   if (!roles) return null;
 
@@ -131,13 +151,13 @@ function PriceEstimator({ table }: { table: PriceTable }) {
 
   return (
     <div className="mt-4 rounded-2xl border border-border bg-secondary/40 p-5">
-      <div className="text-sm font-semibold text-primary">Estimer mon prix</div>
+      <div className="text-sm font-semibold text-primary">{t("tour.estimate")}</div>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         {/* Formule / hôtel */}
         <label className="block">
           <span className="mb-1.5 block text-xs font-medium text-muted-foreground">
-            Hôtel / formule
+            {t("tour.hotelPackage")}
           </span>
           <select
             value={rowIdx}
@@ -156,7 +176,7 @@ function PriceEstimator({ table }: { table: PriceTable }) {
         {/* Chambre */}
         <div className="block">
           <span className="mb-1.5 block text-xs font-medium text-muted-foreground">
-            Type de chambre
+            {t("tour.roomType")}
           </span>
           <div className="flex flex-wrap gap-2">
             {(
@@ -172,7 +192,13 @@ function PriceEstimator({ table }: { table: PriceTable }) {
                 onClick={() => setBasis(b)}
                 className={`rounded-full px-4 py-2 text-sm font-medium capitalize transition ${basis === b ? "bg-primary text-primary-foreground" : "border border-border bg-card hover:border-primary"}`}
               >
-                {b === "double" ? "Double" : b === "triple" ? "Triple" : "Single"}
+                {t(
+                  b === "double"
+                    ? "hajj.roomDouble"
+                    : b === "triple"
+                      ? "hajj.roomTriple"
+                      : "tour.single",
+                )}
               </button>
             ))}
           </div>
@@ -180,7 +206,9 @@ function PriceEstimator({ table }: { table: PriceTable }) {
 
         {/* Adultes */}
         <div className="block">
-          <span className="mb-1.5 block text-xs font-medium text-muted-foreground">Adultes</span>
+          <span className="mb-1.5 block text-xs font-medium text-muted-foreground">
+            {t("tour.adults")}
+          </span>
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -204,7 +232,7 @@ function PriceEstimator({ table }: { table: PriceTable }) {
         {/* Enfants */}
         <div className="block">
           <span className="mb-1.5 block text-xs font-medium text-muted-foreground">
-            Enfants (âge)
+            {t("tour.childrenAge")}
           </span>
           <div className="flex flex-wrap items-center gap-2">
             {childAges.map((age, i) => (
@@ -251,7 +279,7 @@ function PriceEstimator({ table }: { table: PriceTable }) {
       <div className="mt-5 rounded-xl bg-card p-4 shadow-[var(--shadow-soft)]">
         {result?.unavailable ? (
           <p className="text-sm text-muted-foreground">
-            Cette combinaison n'est pas disponible pour la formule choisie. Contactez l'agence pour
+            {t("tour.estimateUnavailable")}
             un devis.
           </p>
         ) : result ? (
@@ -265,13 +293,13 @@ function PriceEstimator({ table }: { table: PriceTable }) {
               ))}
             </ul>
             <div className="mt-3 flex items-baseline justify-between border-t border-border pt-3">
-              <span className="text-sm font-semibold">Total estimé</span>
+              <span className="text-sm font-semibold">{t("tour.estimateTotal")}</span>
               <span className="font-display text-2xl text-primary">{fmt(result.total)} dh</span>
             </div>
           </>
         ) : null}
         <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
-          Estimation indicative hors taxes, visa et suppléments éventuels. Le tarif définitif est
+          {t("tour.estimateNote")}
           confirmé par l'agence.
         </p>
       </div>
@@ -279,7 +307,7 @@ function PriceEstimator({ table }: { table: PriceTable }) {
   );
 }
 
-export const Route = createFileRoute("/voyages/$slug")({
+export const Route = createFileRoute("/$lang/voyages/$slug")({
   beforeLoad: () => {
     if (!isEnabled("voyagesOrganises")) throw notFound();
   },
@@ -288,16 +316,29 @@ export const Route = createFileRoute("/voyages/$slug")({
     if (!tour) throw notFound();
     return { tour };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     if (!loaderData)
-      return { meta: [{ title: "Voyage introuvable" }, { name: "robots", content: "noindex" }] };
-    const t = loaderData.tour;
+      return {
+        meta: [
+          { title: tFor(params.lang)("tour.notFound") },
+          { name: "robots", content: "noindex" },
+        ],
+      };
+    // Resolved, not raw: a Localized object in a template literal stringifies
+    // to "[object Object]" and TypeScript never complains.
+    const t = localizeTourFor(loaderData.tour, params.lang);
+    const tr = tFor(params.lang);
     return {
       meta: [
         { title: `${t.title} — ${agency.identity.name}` },
         {
           name: "description",
-          content: `${t.subtitle}. ${t.duration}. ${t.dates}. Prix : ${t.price}.`,
+          // A priceless tour must not advertise one in search results either,
+          // so the "À partir de …" clause drops out rather than reading
+          // "À partir de Sur devis".
+          content: isQuoteOnly(t.price)
+            ? `${t.subtitle}. ${t.duration}. ${t.dates}. ${tr("tour.onRequest")}.`
+            : `${t.subtitle}. ${t.duration}. ${t.dates}. ${tr("tour.from")} ${priceOrQuote(t.price, tr)}.`,
         },
         { property: "og:title", content: `${t.title} — ${agency.identity.name}` },
         { property: "og:description", content: `${t.subtitle}. ${t.duration}.` },
@@ -308,22 +349,34 @@ export const Route = createFileRoute("/voyages/$slug")({
   },
   component: TourDetail,
   pendingComponent: DetailSkeleton,
-  notFoundComponent: () => (
-    <div className="min-h-screen">
-      <Header />
-      <div className="container-page py-40 text-center">
-        <h1 className="font-display text-4xl">Voyage introuvable</h1>
-        <Link to="/voyages-organises" className="btn-primary mt-6 inline-flex">
-          Voir tous les voyages
-        </Link>
+  notFoundComponent: function NotFoundComponent() {
+    const lang = useLocale();
+    const t = useT();
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="container-page py-40 text-center">
+          <h1 className="font-display text-4xl">{t("tour.notFound")}</h1>
+          <Link
+            to="/$lang/voyages-organises"
+            params={{ lang }}
+            className="btn-primary mt-6 inline-flex"
+          >
+            {t("home.seeAllTrips")}
+          </Link>
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
-  ),
+    );
+  },
 });
 
 function TourDetail() {
-  const { tour } = Route.useLoaderData();
+  const lang = useLocale();
+  const t = useT();
+  const { tour: rawTour } = Route.useLoaderData();
+  // Resolved once, so everything below renders plain strings.
+  const tour = localizeTour(rawTour, lang);
   const departures = tour.departures ?? [tour.dates];
 
   return (
@@ -332,11 +385,15 @@ function TourDetail() {
 
       {/* Hero */}
       <section className="relative h-[70vh] w-full overflow-hidden">
-        <img
-          src={tour.image}
-          alt={tour.title}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        {tour.image ? (
+          <img
+            src={tour.image}
+            alt={tour.title}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/80 to-accent" />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/20" />
         <div className="relative z-10 flex h-full items-end pb-16 pt-40">
           <div className="container-page text-white">
@@ -351,12 +408,20 @@ function TourDetail() {
               <span className="inline-flex items-center gap-2">
                 <Clock className="h-4 w-4" /> {tour.duration}
               </span>
-              <span className="inline-flex items-center gap-2">
-                <Calendar className="h-4 w-4" /> {tour.dates}
-              </span>
+              {/* One chip per departure, the same way the Omra programmes
+                  list theirs. `departures` already falls back to the single
+                  dates line, so a programme the agency has not given dates
+                  for renders exactly as it did before. */}
+              {departures.map((d) => (
+                <span key={d} className="inline-flex items-center gap-2">
+                  <Calendar className="h-4 w-4" /> {d}
+                </span>
+              ))}
               <span className="inline-flex items-baseline gap-2 rounded-full bg-white/15 px-4 py-1.5 backdrop-blur">
-                <span className="opacity-80">À partir de</span>
-                <span className="font-display text-lg font-semibold">{tour.price}</span>
+                <span className="opacity-80">{t("tour.from")}</span>
+                <span className="font-display text-lg font-semibold">
+                  {priceOrQuote(tour.price, t)}
+                </span>
               </span>
             </div>
           </div>
@@ -389,7 +454,7 @@ function TourDetail() {
         {/* Left: content */}
         <div className="lg:col-span-2">
           <Reveal>
-            <h2 className="font-display text-3xl">Aperçu du programme</h2>
+            <h2 className="font-display text-3xl">{t("tour.overview")}</h2>
             <p className="mt-4 leading-relaxed text-muted-foreground">
               {tour.overview ??
                 `${tour.subtitle}. Un programme organisé par ${agency.identity.name} et encadré par nos équipes, du départ au retour.`}
@@ -398,7 +463,7 @@ function TourDetail() {
 
           {tour.highlights && (
             <Reveal>
-              <h3 className="mt-10 font-display text-2xl">Points forts</h3>
+              <h3 className="mt-10 font-display text-2xl">{t("tour.highlights")}</h3>
               <ul className="mt-4 grid gap-2 sm:grid-cols-2">
                 {tour.highlights.map((h) => (
                   <li
@@ -415,7 +480,7 @@ function TourDetail() {
           {/* Day-by-day itinerary */}
           {tour.itinerary && (
             <Reveal>
-              <h3 className="mt-12 font-display text-2xl">Programme jour par jour</h3>
+              <h3 className="mt-12 font-display text-2xl">{t("tour.itinerary")}</h3>
               <ol className="mt-6 space-y-4">
                 {tour.itinerary.map((it) => (
                   <li
@@ -463,14 +528,18 @@ function TourDetail() {
           <Reveal>
             <div className="mt-12 grid gap-8 sm:grid-cols-2">
               <div>
-                <h3 className="font-display text-2xl">Le prix comprend</h3>
+                <h3 className="font-display text-2xl">{t("tour.included")}</h3>
                 <ul className="mt-4 space-y-2">
+                  {/* tour.fb* — the four fallback lines, which already existed
+                      in all three dictionaries and were never called, so a
+                      tour with no `included` data listed its inclusions in
+                      French to every reader. */}
                   {(
                     tour.included ?? [
-                      "Vols internationaux",
-                      "Hébergement",
-                      "Transferts",
-                      "Encadrement",
+                      t("tour.fbFlights"),
+                      t("tour.fbHotel"),
+                      t("tour.fbTransfers"),
+                      t("tour.fbGuiding"),
                     ]
                   ).map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm">
@@ -481,7 +550,7 @@ function TourDetail() {
               </div>
               {tour.notIncluded && (
                 <div>
-                  <h3 className="font-display text-2xl">Ne comprend pas</h3>
+                  <h3 className="font-display text-2xl">{t("tour.notIncluded")}</h3>
                   <ul className="mt-4 space-y-2">
                     {tour.notIncluded.map((f) => (
                       <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
@@ -497,12 +566,12 @@ function TourDetail() {
           {/* Hébergement table */}
           {tour.hebergement && (
             <Reveal>
-              <h3 className="mt-12 font-display text-2xl">Hébergement</h3>
+              <h3 className="mt-12 font-display text-2xl">{t("tour.fbHotel")}</h3>
               <div className="mt-4 overflow-hidden rounded-2xl border border-border">
                 <div className="grid grid-cols-[1fr_auto_2fr] gap-2 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground">
-                  <span>Ville</span>
-                  <span className="text-center">Nuits</span>
-                  <span>Hôtels</span>
+                  <span>{t("tour.city")}</span>
+                  <span className="text-center">{t("tour.nights")}</span>
+                  <span>{t("pilgrimage.hotels")}</span>
                 </div>
                 {tour.hebergement.map((h, i) => (
                   <div
@@ -522,22 +591,24 @@ function TourDetail() {
 
           {/* Tarifs par hôtel / formule */}
           {tour.priceTables &&
-            tour.priceTables.map((t, ti) => (
+            tour.priceTables.map((table, ti) => (
               <Reveal key={ti}>
-                <h3 className="mt-12 font-display text-2xl">Tarifs &amp; formules</h3>
-                {(t.title || t.dates) && (
+                <h3 className="mt-12 font-display text-2xl">{t("tour.pricesTitle")}</h3>
+                {(table.title || table.dates) && (
                   <div className="mt-2 flex flex-wrap items-baseline gap-x-3 text-sm">
-                    {t.title && <span className="font-semibold text-primary">{t.title}</span>}
-                    {t.dates && <span className="text-muted-foreground">{t.dates}</span>}
+                    {table.title && (
+                      <span className="font-semibold text-primary">{table.title}</span>
+                    )}
+                    {table.dates && <span className="text-muted-foreground">{table.dates}</span>}
                   </div>
                 )}
 
                 {/* Interactive price estimator */}
-                {t.columnRoles && <PriceEstimator table={t} />}
+                {table.columnRoles && <PriceEstimator table={table} />}
 
                 {/* mobile — one card per row, no horizontal scroll */}
                 <div className="mt-4 space-y-3 md:hidden">
-                  {t.rows.map((r) => (
+                  {table.rows.map((r) => (
                     <div
                       key={r.label}
                       className="overflow-hidden rounded-2xl border border-border bg-card"
@@ -552,7 +623,9 @@ function TourDetail() {
                             key={ci}
                             className="flex items-center justify-between gap-3 px-4 py-2"
                           >
-                            <dt className="text-xs text-muted-foreground">{t.columns[ci + 1]}</dt>
+                            <dt className="text-xs text-muted-foreground">
+                              {table.columns[ci + 1]}
+                            </dt>
                             <dd
                               className={`text-sm font-semibold ${ci === 0 ? "text-primary" : ""}`}
                             >
@@ -570,7 +643,7 @@ function TourDetail() {
                   <table className="w-full border-collapse text-sm">
                     <thead>
                       <tr className="bg-primary text-left text-primary-foreground">
-                        {t.columns.map((c, ci) => (
+                        {table.columns.map((c, ci) => (
                           <th
                             key={c}
                             className={`px-4 py-3 font-semibold ${ci === 0 ? "" : "text-center"}`}
@@ -581,7 +654,7 @@ function TourDetail() {
                       </tr>
                     </thead>
                     <tbody>
-                      {t.rows.map((r, ri) => (
+                      {table.rows.map((r, ri) => (
                         <tr
                           key={r.label}
                           className={`border-t border-border ${ri % 2 ? "bg-sand" : "bg-card"}`}
@@ -609,7 +682,7 @@ function TourDetail() {
           {/* Détails des vols */}
           {tour.flights && tour.flights.length > 0 && (
             <Reveal>
-              <h3 className="mt-12 font-display text-2xl">Détails des vols</h3>
+              <h3 className="mt-12 font-display text-2xl">{t("tour.flightDetails")}</h3>
               <div className="mt-4 space-y-6">
                 {tour.flights.map((fs, fi) => (
                   <div key={fi}>
@@ -645,11 +718,17 @@ function TourDetail() {
                       <table className="w-full border-collapse text-sm">
                         <thead>
                           <tr className="bg-primary text-left text-primary-foreground">
-                            <th className="px-4 py-3 font-semibold">Vol</th>
-                            <th className="px-4 py-3 font-semibold">Date</th>
-                            <th className="px-4 py-3 text-center font-semibold">N° de vol</th>
-                            <th className="px-4 py-3 text-center font-semibold">Départ</th>
-                            <th className="px-4 py-3 text-center font-semibold">Arrivée</th>
+                            <th className="px-4 py-3 font-semibold">{t("tour.flight")}</th>
+                            <th className="px-4 py-3 font-semibold">{t("tour.date")}</th>
+                            <th className="px-4 py-3 text-center font-semibold">
+                              {t("tour.flightNo")}
+                            </th>
+                            <th className="px-4 py-3 text-center font-semibold">
+                              {t("tour.departure")}
+                            </th>
+                            <th className="px-4 py-3 text-center font-semibold">
+                              {t("tour.arrival")}
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -677,7 +756,7 @@ function TourDetail() {
           {/* Excursions en option */}
           {tour.options && tour.options.length > 0 && (
             <Reveal>
-              <h3 className="mt-12 font-display text-2xl">En option</h3>
+              <h3 className="mt-12 font-display text-2xl">{t("tour.optional")}</h3>
               <ul className="mt-4 space-y-2">
                 {tour.options.map((o) => (
                   <li
@@ -694,7 +773,7 @@ function TourDetail() {
           {/* Bon à savoir */}
           {tour.notes && tour.notes.length > 0 && (
             <Reveal>
-              <h3 className="mt-12 font-display text-2xl">Bon à savoir</h3>
+              <h3 className="mt-12 font-display text-2xl">{t("hajj.goodToKnow")}</h3>
               <ul className="mt-4 space-y-2 rounded-2xl border border-border bg-card p-5">
                 {tour.notes.map((n) => (
                   <li key={n} className="flex gap-2 text-sm leading-relaxed text-muted-foreground">
@@ -710,11 +789,15 @@ function TourDetail() {
         <Reveal delay={0.1} className="lg:sticky lg:top-32 h-fit">
           <aside className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
             <div className="text-xs uppercase tracking-widest text-muted-foreground">
-              Prix par personne
+              {t("tour.pricePerPerson")}
             </div>
-            <div className="mt-2 font-display text-4xl text-primary">{tour.price}</div>
+            <div className="mt-2 font-display text-4xl text-primary">
+              {priceOrQuote(tour.price, t)}
+            </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              {tour.priceNote ?? "Base chambre double, sous réserve de disponibilité."}
+              {isQuoteOnly(tour.price)
+                ? t("tour.indicative")
+                : (tour.priceNote ?? t("tour.priceNoteDefault"))}
             </p>
 
             {tour.bookingUrl && (
@@ -724,7 +807,7 @@ function TourDetail() {
                 rel="noreferrer"
                 className="btn-primary mt-5 w-full justify-center hover:-translate-y-0.5"
               >
-                Réserver en ligne <ArrowRight className="h-4 w-4" />
+                {t("tour.bookOnline")} <ArrowRight className="h-4 w-4" />
               </a>
             )}
 
@@ -736,14 +819,14 @@ function TourDetail() {
                 const value = (name: string) => String(f.get(name) ?? "");
                 submitBooking({
                   kind: "tour",
-                  subject: `Réservation — ${tour.title}`,
+                  subject: `${isQuoteOnly(tour.price) ? t("tour.quote") : t("action.book")} — ${tour.title}`,
                   fields: [
-                    ["Programme", tour.title],
-                    ["Départ", value("depart")],
-                    ["Nom", `${value("prenom")} ${value("nom")}`.trim()],
-                    ["Email", value("email")],
-                    ["Téléphone", value("tel")],
-                    ["Prix par personne", tour.price],
+                    [t("book.program"), tour.title],
+                    [t("book.date"), value("depart")],
+                    [t("contact.firstName"), value("prenom")],
+                    [t("contact.lastName"), value("nom")],
+                    [t("contact.email"), value("email")],
+                    [t("res.phone"), value("tel")],
                   ],
                 });
               }}
@@ -752,13 +835,13 @@ function TourDetail() {
                 <input
                   name="prenom"
                   required
-                  placeholder="Prénom"
+                  placeholder={t("contact.firstName")}
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
                 />
                 <input
                   name="nom"
                   required
-                  placeholder="Nom"
+                  placeholder={t("contact.lastName")}
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
                 />
               </div>
@@ -766,13 +849,13 @@ function TourDetail() {
                 name="email"
                 type="email"
                 required
-                placeholder="Email"
+                placeholder={t("contact.email")}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               />
               <input
                 name="tel"
                 required
-                placeholder="Téléphone"
+                placeholder={t("res.phone")}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
               />
               <select
@@ -789,7 +872,8 @@ function TourDetail() {
                 type="submit"
                 className="btn-primary w-full justify-center hover:-translate-y-0.5"
               >
-                Réserver <ArrowRight className="h-4 w-4" />
+                {isQuoteOnly(tour.price) ? t("tour.quote") : t("action.book")}{" "}
+                <ArrowRight className="h-4 w-4" />
               </button>
             </form>
 
@@ -799,19 +883,20 @@ function TourDetail() {
               rel="noreferrer"
               className="mt-3 flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-4 py-2.5 text-sm font-semibold text-white hover:opacity-95"
             >
-              <MessageCircle className="h-4 w-4" /> Réserver sur WhatsApp
+              <MessageCircle className="h-4 w-4" /> {t("hajj.whatsapp")}
             </a>
             <a
               href={`tel:${PHONE.replace(/\s/g, "")}`}
               className="mt-3 flex items-center justify-center gap-2 text-sm font-medium text-primary"
             >
-              <Phone className="h-4 w-4" /> {PHONE}
+              <Phone className="h-4 w-4" /> <bdi dir="ltr">{PHONE}</bdi>
             </a>
             <Link
-              to="/voyages-organises"
+              to="/$lang/voyages-organises"
+              params={{ lang }}
               className="mt-4 block text-center text-sm text-muted-foreground underline"
             >
-              Voir tous les voyages
+              {t("home.seeAllTrips")}
             </Link>
           </aside>
         </Reveal>

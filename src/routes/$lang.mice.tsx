@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useLocale, useT, tFor } from "@/i18n";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { IMG } from "@/lib/tours";
@@ -20,44 +21,36 @@ const miceGallery = [
   teamCoworking,
 ];
 
-export const Route = createFileRoute("/mice")({
+export const Route = createFileRoute("/$lang/mice")({
   beforeLoad: () => {
     if (!isEnabled("mice")) throw notFound();
   },
-  head: () =>
+  head: ({ params }) =>
     !isEnabled("mice")
-      ? notFoundHead()
+      ? notFoundHead(tFor(params.lang)("error.notFoundTitle"))
       : {
           meta: [
-            { title: `MICE — Séminaires, congrès & incentives | ${agency.identity.name}` },
-            {
-              name: "description",
-              content: `Organisation de séminaires, conférences, congrès et voyages incentives. ${agency.identity.name} MICE.`,
-            },
-            { property: "og:title", content: `MICE — ${agency.identity.name}` },
-            {
-              property: "og:description",
-              content: "Séminaires, conférences, congrès et voyages incentives.",
-            },
+            { title: tFor(params.lang)("meta.mice.title") },
+            { name: "description", content: tFor(params.lang)("meta.mice.desc") },
+            { property: "og:title", content: tFor(params.lang)("meta.mice.title") },
+            { property: "og:description", content: tFor(params.lang)("meta.mice.desc") },
             { property: "og:image", content: IMG.marrakech },
           ],
         },
-  component: () => (
+  component: function RouteComponent() {
+    const lang = useLocale();
+    const t = useT();
+    return (
     <div className="min-h-screen">
       <Header />
       <section className="pt-40 pb-16 bg-sand">
         <div className="container-page grid items-center gap-10 md:grid-cols-2">
           <Reveal>
-            <div className="text-xs font-semibold uppercase tracking-widest text-primary">MICE</div>
-            <h1 className="mt-2 font-display text-5xl sm:text-6xl">
-              Meetings, Incentives, Conferences & Exhibitions
-            </h1>
-            <p className="mt-4 text-muted-foreground">
-              De la conception à la logistique, nous imaginons et produisons des événements
-              professionnels sur mesure, au Maroc et à l'international.
-            </p>
-            <Link to="/contact" className="btn-primary mt-6 hover:-translate-y-0.5">
-              Demander un devis
+            <div className="text-xs font-semibold uppercase tracking-widest text-primary">{t("home.miceEyebrow")}</div>
+            <h1 className="mt-2 font-display text-5xl sm:text-6xl">{t("mice.title")}</h1>
+            <p className="mt-4 text-muted-foreground">{t("mice.leadTemplate")}</p>
+            <Link to="/$lang/contact" params={{ lang }} className="btn-primary mt-6 hover:-translate-y-0.5">
+              {t("mice.quote")}
             </Link>
           </Reveal>
           <div className="grid grid-cols-2 gap-3">
@@ -85,22 +78,22 @@ export const Route = createFileRoute("/mice")({
         </div>
       </section>
       <StaggerGroup className="container-page py-16 grid gap-6 md:grid-cols-4">
-        {[
-          { icon: Users, t: "Meetings", d: "Réunions d'entreprise clé en main." },
-          { icon: Sparkles, t: "Incentives", d: "Voyages de motivation & récompenses." },
-          { icon: Mic, t: "Conferences", d: "Congrès professionnels & scientifiques." },
-          { icon: Building2, t: "Exhibitions", d: "Salons et événements grand format." },
-        ].map(({ icon: I, t, d }) => (
-          <StaggerItem key={t} className="rounded-3xl border border-border p-6">
+        {([
+          { icon: Users, t: "mice.meetings", d: "mice.meetingsDesc" },
+          { icon: Sparkles, t: "mice.incentives", d: "mice.incentivesDesc" },
+          { icon: Mic, t: "mice.conferences", d: "mice.conferencesDesc" },
+          { icon: Building2, t: "mice.exhibitions", d: "mice.exhibitionsDesc" },
+        ] as const).map(({ icon: I, t: titleKey, d: descKey }) => (
+          <StaggerItem key={titleKey} className="rounded-3xl border border-border p-6">
             <I className="h-6 w-6 text-primary" />
-            <h3 className="mt-4 font-display text-xl">{t}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{d}</p>
+            <h3 className="mt-4 font-display text-xl">{t(titleKey)}</h3>
+            <p className="mt-2 text-sm text-muted-foreground">{t(descKey)}</p>
           </StaggerItem>
         ))}
       </StaggerGroup>
       <section className="container-page pb-16">
         <Reveal>
-          <h2 className="font-display text-3xl sm:text-4xl">Nos événements en images</h2>
+          <h2 className="font-display text-3xl sm:text-4xl">{t("mice.gallery")}</h2>
         </Reveal>
         <StaggerGroup className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3">
           {miceGallery.map((src, i) => (
@@ -115,5 +108,6 @@ export const Route = createFileRoute("/mice")({
       </section>
       <Footer />
     </div>
-  ),
+    );
+  },
 });

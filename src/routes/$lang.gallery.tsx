@@ -1,4 +1,5 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
+import { useLocale, useT, tFor } from "@/i18n";
 import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { X, ChevronLeft, ChevronRight, ImageIcon, ArrowLeft } from "lucide-react";
 import { Header } from "@/components/site/Header";
@@ -6,10 +7,6 @@ import { Footer } from "@/components/site/Footer";
 import { ListingSkeleton } from "@/components/site/Skeleton";
 import { content } from "@/lib/content";
 import {
-  galleryTitle,
-  galleryEyebrow,
-  galleryIntro,
-  galleryStrings as S,
   type GalleryPhoto,
 } from "@/lib/gallery";
 import { agency, isEnabled, notFoundHead } from "@/config/agency";
@@ -17,25 +14,27 @@ import { agency, isEnabled, notFoundHead } from "@/config/agency";
 /** The gallery belongs to the OMRA section — it needs both switches on. */
 const galleryOn = () => isEnabled("omra") && isEnabled("gallery");
 
-export const Route = createFileRoute("/gallery")({
+export const Route = createFileRoute("/$lang/gallery")({
   beforeLoad: () => {
     if (!galleryOn()) throw notFound();
   },
   loader: async () => ({ photos: await content.getGalleryPhotos() }),
-  head: () =>
+  head: ({ params }) =>
     !galleryOn()
-      ? notFoundHead()
+      ? notFoundHead(tFor(params.lang)("error.notFoundTitle"))
       : {
           meta: [
-            { title: `${galleryTitle} — ${agency.identity.name}` },
-            { name: "description", content: galleryIntro },
+            { title: tFor(params.lang)("meta.gallery.title") },
+            { name: "description", content: tFor(params.lang)("gallery.lead") },
           ],
         },
-  pendingComponent: () => <ListingSkeleton eyebrow={galleryEyebrow} title={galleryTitle} />,
+  pendingComponent: GalleryPending,
   component: GalleryPage,
 });
 
 function GalleryPage() {
+  const lang = useLocale();
+  const t = useT();
   const { photos } = Route.useLoaderData();
   const [openAt, setOpenAt] = useState<number | null>(null);
 
@@ -47,16 +46,16 @@ function GalleryPage() {
         <div className="pt-40 pb-16 bg-sand">
           <div className="container-page">
             <div className="text-sm font-bold" style={{ color: "var(--brand-yellow)" }}>
-              {galleryEyebrow}
+              {t("gallery.eyebrow")}
             </div>
-            <h1 className="mt-2 font-display text-5xl sm:text-6xl">{galleryTitle}</h1>
-            <p className="mt-4 max-w-2xl text-muted-foreground">{galleryIntro}</p>
+            <h1 className="mt-2 font-display text-5xl sm:text-6xl">{t("gallery.title")}</h1>
+            <p className="mt-4 max-w-2xl text-muted-foreground">{t("gallery.lead")}</p>
             <Link
-              to="/omra"
+              to="/$lang/omra" params={{ lang }}
               className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
             >
               <ArrowLeft className="h-4 w-4 rotate-180" />
-              {S.backToOmra}
+              {t("gallery.backToOmra")}
             </Link>
           </div>
         </div>
@@ -98,17 +97,18 @@ function PhotoTile({
   index: number;
   onOpen: () => void;
 }) {
+  const t = useT();
   const [loaded, setLoaded] = useState(false);
   return (
     <button
       type="button"
       onClick={onOpen}
       className="group relative block w-full break-inside-avoid overflow-hidden rounded-2xl skeleton text-right shadow-[var(--shadow-soft)] transition duration-300 hover:shadow-[var(--shadow-lift)]"
-      aria-label={photo.caption ? `${S.enlarge} — ${photo.caption}` : S.enlarge}
+      aria-label={photo.caption ? `${t("gallery.enlarge")} — ${photo.caption}` : t("gallery.enlarge")}
     >
       <img
         src={photo.image}
-        alt={photo.caption || photo.place || S.alt}
+        alt={photo.caption || photo.place || t("gallery.alt")}
         loading={index < 6 ? "eager" : "lazy"}
         ref={(el) => {
           if (el?.complete) setLoaded(true); // cached images fire no onLoad
@@ -129,11 +129,12 @@ function PhotoTile({
 }
 
 function EmptyState() {
+  const t = useT();
   return (
     <div className="flex flex-col items-center rounded-3xl border-2 border-dashed border-primary/25 bg-card px-6 py-20 text-center">
       <ImageIcon className="h-10 w-10 text-primary/30" />
-      <p className="mt-4 font-semibold">{S.emptyTitle}</p>
-      <p className="mt-1 max-w-md text-sm text-muted-foreground">{S.emptyBody}</p>
+      <p className="mt-4 font-semibold">{t("gallery.emptyTitle")}</p>
+      <p className="mt-1 max-w-md text-sm text-muted-foreground">{t("gallery.emptyBody")}</p>
     </div>
   );
 }
@@ -149,6 +150,7 @@ function Lightbox({
   onIndex: Dispatch<SetStateAction<number | null>>;
   onClose: () => void;
 }) {
+  const t = useT();
   const photo = photos[index];
   // Functional update, not `index + delta`: two arrow presses inside one frame
   // would both read the same stale index and collapse into a single step.
@@ -184,14 +186,14 @@ function Lightbox({
       aria-modal="true"
       dir="rtl"
       lang="ar"
-      aria-label={photo.caption || S.alt}
+      aria-label={photo.caption || t("gallery.alt")}
       onClick={onClose}
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
     >
       <button
         type="button"
         onClick={onClose}
-        aria-label={S.close}
+        aria-label={t("gallery.close")}
         className="absolute left-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
       >
         <X className="h-5 w-5" />
@@ -200,8 +202,8 @@ function Lightbox({
       {!single && (
         <>
           {/* RTL reading order: "next" sits on the left, "previous" on the right */}
-          <NavButton side="left" label={S.next} onClick={() => go(1)} />
-          <NavButton side="right" label={S.prev} onClick={() => go(-1)} />
+          <NavButton side="left" label={t("gallery.next")} onClick={() => go(1)} />
+          <NavButton side="right" label={t("gallery.prev")} onClick={() => go(-1)} />
         </>
       )}
 
@@ -212,7 +214,7 @@ function Lightbox({
       >
         <img
           src={photo.image}
-          alt={photo.caption || photo.place || S.alt}
+          alt={photo.caption || photo.place || t("gallery.alt")}
           className="mx-auto max-h-[76vh] w-auto max-w-full rounded-2xl object-contain shadow-[var(--shadow-lift)]"
         />
         {(photo.caption || photo.place) && (
@@ -259,4 +261,10 @@ function NavButton({
       <Icon className="h-6 w-6" />
     </button>
   );
+}
+
+/** The skeleton shown while photos load — a component, so it translates. */
+function GalleryPending() {
+  const t = useT();
+  return <ListingSkeleton eyebrow={t("gallery.eyebrow")} title={t("gallery.title")} />;
 }

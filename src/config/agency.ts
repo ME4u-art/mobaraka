@@ -1,3 +1,5 @@
+import type { Locale } from "@/i18n/types";
+
 /**
  * AGENCY CONFIG — the single file to edit when onboarding a new client.
  *
@@ -31,6 +33,12 @@ export type KnownFeature =
 export type Features = Partial<Record<KnownFeature, boolean>> & Record<string, boolean | undefined>;
 
 export type AgencyConfig = {
+  /**
+   * Languages the site is published in, best first. The first one is the
+   * default a visitor lands on when their browser asks for nothing we speak,
+   * and a single-entry list hides the switcher.
+   */
+  languages: Locale[];
   identity: {
     name: string; // "Votre Agence"
     tagline: string; // shown in the header top bar
@@ -80,8 +88,21 @@ export type AgencyConfig = {
   /** Partner/airline logo ids that exist in src/lib/partners.ts */
   partners?: string[];
   seo: {
+    /** Absolute site origin, for canonical/hreflang/og:url. */
+    url: string;
     title: string; // default <title>
     description: string; // default meta description
+  };
+  /**
+   * Registry details for the legal notice. RC and ICE are public register
+   * entries and may be published; nothing else belongs here — no CIN, no date
+   * of birth, no identifiant fiscal, no patente, no CNSS.
+   */
+  legal?: {
+    capital: string; // "100 000,00 MAD"
+    rc: string; // "522321 — Casablanca"
+    ice: string; // "002944697000007"
+    manager: string; // the gérant(e) as the register spells it
   };
   data: { source: "local" } | { source: "wordpress"; url: string };
 };
@@ -90,6 +111,31 @@ export type AgencyConfig = {
 
 export const isEnabled = (f: KnownFeature | string): boolean => agency.features[f] === true;
 
+/** The language a visitor lands on when we speak none of theirs. */
+export const defaultLocale = (): Locale => agency.languages[0] ?? "fr";
+
+/** One language means no switcher — a lone "FR" button is noise. */
+export const isMultilingual = (): boolean => agency.languages.length > 1;
+
+/**
+ * The agency's address in the reader's script.
+ *
+ * Arabic falls back to the French line when a client has not supplied one —
+ * an address is still useful in the wrong script, where a blank is not.
+ */
+export const addressFor = (locale: Locale): string =>
+  (locale === "ar" && agency.contact.addresses.ar) || agency.contact.addresses.fr;
+
+/**
+ * Absolute URL for a root-relative path.
+ *
+ * Canonical, hreflang and og:url all need one: Google silently ignores a
+ * relative alternate, which leaves the language trees competing with each
+ * other as duplicates instead of being understood as translations.
+ */
+export const absoluteUrl = (path: string) =>
+  `${agency.seo.url.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
+
 /** Digits-only WhatsApp number for wa.me links */
 export const whatsappDigits = () => agency.contact.whatsapp.replace(/[^0-9]/g, "");
 
@@ -97,9 +143,9 @@ export const whatsappDigits = () => agency.contact.whatsapp.replace(/[^0-9]/g, "
  * head() meta for a feature-disabled route — otherwise the disabled page's
  * real title would still show on the 404 the route renders.
  */
-export const notFoundHead = () => ({
+export const notFoundHead = (title: string) => ({
   meta: [
-    { title: `Page introuvable — ${agency.identity.name}` },
+    { title: `${title} — ${agency.identity.name}` },
     { name: "robots", content: "noindex" },
   ],
 });
@@ -113,6 +159,9 @@ export const notFoundHead = () => ({
 // A filled-in example lives in docs/clients/tazi-travels.agency.ts.
 
 export const agency: AgencyConfig = {
+  // Omra sells in Arabic, the agency corresponds in French, and English is
+  // there for the diaspora. French first: it is what the flyers are written in.
+  languages: ["fr", "ar", "en"],
   identity: {
     name: "Mobaraka Tourisme & Voyage",
     tagline: "Agence de tourisme et de voyages — Témara",
@@ -168,6 +217,9 @@ export const agency: AgencyConfig = {
   },
   partners: [],
   seo: {
+    // No domain of its own yet — update this the day it gets one, or
+    // canonical and hreflang will point at the wrong host.
+    url: "https://mobaraka.vercel.app",
     title: "Mobaraka Tourisme & Voyage — Omra, Hajj et voyages organisés",
     description:
       "Agence de tourisme et de voyages à Témara : programmes Omra et Hajj encadrés, vols directs et voyages organisés.",
