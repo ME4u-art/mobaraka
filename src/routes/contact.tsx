@@ -5,6 +5,7 @@ import { Footer } from "@/components/site/Footer";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { agency } from "@/config/agency";
+import { submitBooking } from "@/lib/booking";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -56,13 +57,16 @@ export const Route = createFileRoute("/contact")({
             onSubmit={(e) => {
               e.preventDefault();
               const f = new FormData(e.currentTarget);
-              const prenom = f.get("prenom"),
-                nom = f.get("nom"),
-                email = f.get("email");
-              const sujet = f.get("sujet") || "Demande de renseignement";
-              const message = f.get("message");
-              const body = `Nom : ${prenom} ${nom}\nEmail : ${email}\n\n${message}`;
-              window.location.href = `mailto:${agency.contact.email}?subject=${encodeURIComponent(String(sujet))}&body=${encodeURIComponent(body)}`;
+              const value = (name: string) => String(f.get(name) ?? "");
+              submitBooking({
+                kind: "contact",
+                subject: value("sujet") || "Demande de renseignement",
+                fields: [
+                  ["Nom", `${value("prenom")} ${value("nom")}`.trim()],
+                  ["Email", value("email")],
+                  ["Message", value("message")],
+                ],
+              });
             }}
           >
             <div className="grid gap-4 sm:grid-cols-2">

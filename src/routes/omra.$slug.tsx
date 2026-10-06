@@ -4,6 +4,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { agencyPhones, agencyAddresses, whatsappNumber } from "@/lib/omra";
 import { content } from "@/lib/content";
+import { submitBooking } from "@/lib/booking";
 import { DetailSkeleton } from "@/components/site/Skeleton";
 import { agency, isEnabled } from "@/config/agency";
 import { Reveal } from "@/components/motion/Reveal";
@@ -189,6 +190,22 @@ function BookingForm({
         className="space-y-4 p-6"
         onSubmit={(e) => {
           e.preventDefault();
+          const f = new FormData(e.currentTarget);
+          const value = (name: string) => String(f.get(name) ?? "");
+          submitBooking({
+            kind: "omra",
+            subject: `حجز العمرة — ${programTitle}`,
+            fields: [
+              ["البرنامج", value("program") || programTitle],
+              ["تاريخ الرحلة", value("date")],
+              ["الفندق", value("hotel")],
+              ["الغرفة", value("room")],
+              ["عدد الأشخاص", value("people")],
+              ["الاسم الكامل", value("fullName")],
+              ["البريد الإلكتروني", value("email")],
+              ["رقم الهاتف", value("phone")],
+            ],
+          });
           setSent(true);
         }}
       >
@@ -201,6 +218,7 @@ function BookingForm({
               البرنامج <span className="text-primary">*</span>
             </span>
             <select
+              name="program"
               required
               defaultValue=""
               className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -222,6 +240,7 @@ function BookingForm({
               تاريخ الرحلة <span className="text-primary">*</span>
             </span>
             <select
+              name="date"
               required
               defaultValue=""
               className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -242,6 +261,7 @@ function BookingForm({
             الفندق <span className="text-primary">*</span>
           </span>
           <select
+            name="hotel"
             required
             defaultValue=""
             className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -261,6 +281,7 @@ function BookingForm({
             الغرفة <span className="text-primary">*</span>
           </span>
           <select
+            name="room"
             required
             defaultValue=""
             className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -278,8 +299,10 @@ function BookingForm({
             عدد الأشخاص <span className="text-primary">*</span>
           </span>
           <input
+            name="people"
             type="number"
             min={1}
+            max={20}
             defaultValue={1}
             required
             className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -290,6 +313,7 @@ function BookingForm({
             الاسم الكامل <span className="text-primary">*</span>
           </span>
           <input
+            name="fullName"
             required
             placeholder="الاسم الكامل"
             className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -298,6 +322,7 @@ function BookingForm({
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium">البريد الإلكتروني</span>
           <input
+            name="email"
             type="email"
             dir="ltr"
             placeholder="yourname@example.com"
@@ -309,6 +334,7 @@ function BookingForm({
             رقم الهاتف <span className="text-primary">*</span>
           </span>
           <input
+            name="phone"
             required
             dir="ltr"
             placeholder="+212 6 00 00 00 00"

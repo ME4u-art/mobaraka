@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { agency, isEnabled, whatsappDigits } from "@/config/agency";
+import { submitBooking } from "@/lib/booking";
 
 const WHATSAPP = whatsappDigits();
 const PHONE = agency.contact.phones[0];
@@ -732,8 +733,19 @@ function TourDetail() {
               onSubmit={(e) => {
                 e.preventDefault();
                 const f = new FormData(e.currentTarget);
-                const body = `Programme : ${tour.title}\nDépart : ${f.get("depart")}\nNom : ${f.get("prenom")} ${f.get("nom")}\nEmail : ${f.get("email")}\nTéléphone : ${f.get("tel")}`;
-                window.location.href = `mailto:${agency.contact.email}?subject=${encodeURIComponent("Réservation — " + tour.title)}&body=${encodeURIComponent(body)}`;
+                const value = (name: string) => String(f.get(name) ?? "");
+                submitBooking({
+                  kind: "tour",
+                  subject: `Réservation — ${tour.title}`,
+                  fields: [
+                    ["Programme", tour.title],
+                    ["Départ", value("depart")],
+                    ["Nom", `${value("prenom")} ${value("nom")}`.trim()],
+                    ["Email", value("email")],
+                    ["Téléphone", value("tel")],
+                    ["Prix par personne", tour.price],
+                  ],
+                });
               }}
             >
               <div className="grid grid-cols-2 gap-2">
