@@ -23,6 +23,7 @@ const voyagesGroup: NavItem[] = [
 const topNav: NavItem[] = [
   { to: "/$lang/mice", key: "nav.mice", feature: "mice" },
   { to: "/$lang/visa", key: "nav.visa", feature: "visa" },
+  { to: "/$lang/gallery", key: "nav.gallery", feature: "gallery" },
   { to: "/$lang/a-propos", key: "nav.about" },
 ];
 

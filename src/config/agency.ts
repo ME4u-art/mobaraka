@@ -208,7 +208,9 @@ export const agency: AgencyConfig = {
     omra: true,
     voyagesOrganises: true,
     gallery: true,
-    circuits: false,
+    // On for the demo so the client sees every section the site offers;
+    // the catalogue has no circuit yet, so the page shows its empty state.
+    circuits: true,
     cruises: true,
     languageStays: true,
     greatDeals: true,

@@ -355,6 +355,7 @@ export const fr = {
   "nav.languageStays": "Séjours linguistiques",
   "nav.greatDeals": "Bons plans",
   "nav.visa": "Visa",
+  "nav.gallery": "Galerie",
 
   // footer — template additions
   "footer.visaFormalities": "Visa & formalités",

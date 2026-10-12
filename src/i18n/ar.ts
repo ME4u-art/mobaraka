@@ -316,6 +316,7 @@ export const ar: Dictionary = {
   "nav.languageStays": "إقامات لغوية",
   "nav.greatDeals": "عروض مميزة",
   "nav.visa": "التأشيرة",
+  "nav.gallery": "معرض الصور",
 
   // footer — template additions
   "footer.visaFormalities": "التأشيرة والإجراءات",

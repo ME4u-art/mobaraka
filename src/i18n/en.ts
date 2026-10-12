@@ -316,6 +316,7 @@ export const en: Dictionary = {
   "nav.languageStays": "Language stays",
   "nav.greatDeals": "Great deals",
   "nav.visa": "Visa",
+  "nav.gallery": "Gallery",
 
   // footer — template additions
   "footer.visaFormalities": "Visa & formalities",
