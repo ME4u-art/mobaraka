@@ -47,7 +47,13 @@ function isH3SwallowedErrorBody(body: string): boolean {
 }
 
 /**
- * Send `/` to a language.
+ * Send `/`, and any page path that carries no language, to a language.
+ *
+ * The first public build had no language prefix (`/a-propos`,
+ * `/voyages/<slug>`, `/omra`), and those links are already out on WhatsApp.
+ * Rather than 404 them, `/a-propos` goes to `/fr/a-propos` (or `/en/…`,
+ * `/ar/…` per the visitor's browser). Paths that look like files (a dot in
+ * the last segment) or internals (`/_serverFn`, `/@vite`) are left alone.
  *
  * `routes/index.tsx` does this too, but only the Worker can see who is
  * asking — inside the router the request is gone. An earlier attempt read
@@ -58,10 +64,16 @@ function isH3SwallowedErrorBody(body: string): boolean {
  * what the `x-default` hreflang already claims — so a crawler, which usually
  * sends no Accept-Language at all, lands where the markup says it should.
  */
-function redirectRootToLocale(request: Request): Response | null {
+function redirectToLocale(request: Request): Response | null {
   if (request.method !== "GET" && request.method !== "HEAD") return null;
   const url = new URL(request.url);
-  if (url.pathname !== "/") return null;
+  const path = url.pathname;
+  const first = path.split("/")[1] ?? "";
+  if (path !== "/") {
+    if (isLocale(first)) return null;
+    if (first.startsWith("_") || first.startsWith("@")) return null;
+    if (path.split("/").pop()?.includes(".")) return null;
+  }
 
   // Search is preserved: the root URL is what goes on flyers and ads, so it
   // arrives carrying utm_* more often than it arrives bare.
@@ -74,7 +86,7 @@ function redirectRootToLocale(request: Request): Response | null {
   return new Response(null, {
     status: 307,
     headers: {
-      location: `/${preferredLocale(request)}${url.search}`,
+      location: `/${preferredLocale(request)}${path === "/" ? "" : path}${url.search}`,
       vary: "Accept-Language",
       "cache-control": "no-store",
     },
@@ -113,8 +125,8 @@ function preferredLocale(request: Request): Locale {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
-      const rootRedirect = redirectRootToLocale(request);
-      if (rootRedirect) return rootRedirect;
+      const localeRedirect = redirectToLocale(request);
+      if (localeRedirect) return localeRedirect;
 
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
