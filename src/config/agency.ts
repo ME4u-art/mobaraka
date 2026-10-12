@@ -219,9 +219,11 @@ export const agency: AgencyConfig = {
   },
   partners: [],
   seo: {
-    // No domain of its own yet — update this the day it gets one, or
+    // The live Vercel link (mobaraka.vercel.app is a different, paused
+    // project). Domain chosen: mobarakavoyage.ma — switch here the day it
+    // points at Vercel, not before. Until then: update this the day it gets one, or
     // canonical and hreflang will point at the wrong host.
-    url: "https://mobaraka.vercel.app",
+    url: "https://mobaraka-one.vercel.app",
     title: "Mobaraka Tourisme & Voyage — Omra, Hajj et voyages organisés",
     description:
       "Agence de tourisme et de voyages à Témara : programmes Omra et Hajj encadrés, vols directs et voyages organisés.",
